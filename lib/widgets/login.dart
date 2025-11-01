@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
+
 
 import 'otp.dart';
 
@@ -11,7 +11,7 @@ class MobileLoginPage extends StatefulWidget {
 }
 
 class _MobileLoginPageState extends State<MobileLoginPage> {
-  late VideoPlayerController _controller;
+
   final TextEditingController _mobileController = TextEditingController();
   bool _rememberMe = false;
 
@@ -20,19 +20,12 @@ class _MobileLoginPageState extends State<MobileLoginPage> {
     super.initState();
 
     // 🎬 Initialize Video Controller (local asset)
-    _controller = VideoPlayerController.asset('assets/home.mp4')
-      ..initialize().then((_) {
-        _controller.setLooping(true);
-        _controller.setVolume(0); // mute
-        _controller.play();
-        setState(() {});
-        // refresh UI once initialized
-      });
+
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+
     _mobileController.dispose();
     super.dispose();
   }
@@ -49,21 +42,12 @@ class _MobileLoginPageState extends State<MobileLoginPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 // 🎞️ Small Video View
-                if (_controller.value.isInitialized)
+
                   ClipRRect(
                     borderRadius: BorderRadius.circular(20),
-                    child: SizedBox(
-                      height: 250,
-                      width: 200,
-                      child: AspectRatio(
-                        aspectRatio: _controller.value.aspectRatio,
-                        child: VideoPlayer(_controller),
-                      ),
-                    ),
+                    child:   Image.asset("assets/kljcafe.jpeg",width: 150,height: 150,),
                   )
-                else
-                  const CircularProgressIndicator(),
-
+,
                 const SizedBox(height: 40),
 
                 // 📱 Mobile Number Input

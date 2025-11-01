@@ -32,80 +32,82 @@ class _WalletPageState extends State<WalletPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Balance Card
-              Expanded(child: Padding( padding: EdgeInsets.all(8),
+              Padding( padding: EdgeInsets.all(8),
               child:Container(
                 width: double.infinity,
-                padding: const EdgeInsets.all(20),
+         
+                padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   color: Colors.blueAccent,
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Current balance',
-                      style: TextStyle(color: Colors.white70, fontSize: 14),
-                    ),
-                    const SizedBox(height: 10),
-                    const Text(
-                      '₹ 12,590.90',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
+                child:
 
-                    Row(
-                      children: [
-                        Expanded(child: Container(),flex: 1,),
-
-                        Expanded(child: Stack(
-
-                          children: [
-
-                            Align(
-                              alignment: FractionalOffset.center,
-                              child:   Padding(
-                                  padding:  EdgeInsets.all(4),
-                                  child:  ElevatedButton(
-                                    onPressed: () {
-                                      print('Styled Button Pressed!');
-                                    },
-                                    style: ElevatedButton.styleFrom(
-
-                                      minimumSize: Size(130, 50),
-                                      backgroundColor: Colors.redAccent, // button color
-                                      foregroundColor: Colors.white, // text color
-                                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                    ),
-                                    child: Text(
-                                      'Send Money',
-                                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                                    ),
-                                  )
-                              ) ,
-                            )
-
-                          ],
+Row(
+  children: [
+    Expanded(child:Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Current balance',
+          style: TextStyle(color: Colors.white70, fontSize: 14),
+        ),
+        const SizedBox(height: 10),
+        const Text(
+          '₹ 12,590.90',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 8),
 
 
-                        ),flex: 1,)
+      ],
+    ),flex: 2, )
+,
+
+    Expanded(child:Stack(
+
+      children: [
+
+        Align(
+          alignment: FractionalOffset.center,
+          child:   Padding(
+              padding:  EdgeInsets.all(4),
+              child:  ElevatedButton(
+                onPressed: () {
+                  print('Styled Button Pressed!');
+                },
+                style: ElevatedButton.styleFrom(
 
 
-                      ],
-                    )
-
-                  ],
+                  backgroundColor: Colors.redAccent, // button color
+                  foregroundColor: Colors.white, // text color
+                  padding: EdgeInsets.all(8),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
-              ) ),flex: 1, )
+                child: Text(
+                  'Send money',
+                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                ),
+              )
+          ) ,
+        )
 
-            ,
+      ],
+
+
+    ),flex: 1, )
+  ],
+)
+                ,
+              ) ),
+
+
 
               const SizedBox(height: 20),
 
@@ -137,7 +139,7 @@ class _WalletPageState extends State<WalletPage> {
                     ),
                   );
                 },
-              ),flex: 3,)
+              ),)
 
 
               ,

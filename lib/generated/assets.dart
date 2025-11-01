@@ -2,6 +2,14 @@
 class Assets {
   Assets._();
 
+  static const String assetsBlackcoffee = 'assets/blackcoffee.png';
+  static const String assetsHome = 'assets/home.mp4';
   static const String assetsKljcafe = 'assets/kljcafe.jpeg';
+  static const String assetsMilkcoffee = 'assets/milkcoffee.png';
+  static const String assetsMilktea = 'assets/milktea.png';
+  static const String assetsMyanim = 'assets/myanim.gif';
+  static const String assetsTea = 'assets/tea.png';
+  static const String assetsW1 = 'assets/w1.png';
+  static const String assetsW2 = 'assets/w2.png';
 
 }

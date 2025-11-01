@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kljcafe_customers/widgets/login.dart';
-import 'package:video_player/video_player.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -57,7 +56,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
-  late VideoPlayerController _controller;
+
   bool _isInitialized = false;
 
 
@@ -65,13 +64,6 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _controller = VideoPlayerController.asset('assets/home.mp4')
-      ..initialize().then((_) {
-        setState(() {
-          _isInitialized = true;
-        });
-        _controller.play(); // Auto-play when loaded
-      });
 
     redirectToNext();
 
@@ -79,7 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void dispose() {
-    _controller.dispose();
+
     super.dispose();
   }
 
@@ -121,12 +113,7 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
 
-            _isInitialized
-                ? AspectRatio(
-              aspectRatio: _controller.value.aspectRatio,
-              child: VideoPlayer(_controller),
-            )
-                : const CircularProgressIndicator(),
+            Image.asset("assets/kljcafe.jpeg",width: 150,height: 150,),
 
 
           ],

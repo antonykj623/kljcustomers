@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kljcafe_customers/widgets/comingsoon.dart';
 import 'package:kljcafe_customers/widgets/qrcodescanner.dart';
 import 'package:kljcafe_customers/widgets/wallet_page.dart';
 
@@ -205,6 +206,15 @@ class _CafeHomePageState extends State<CafeHomePage> {
             );
 
           }
+        else if(title.compareTo("Create Order")==0){
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>  Comingsoon(title: ""),
+            ),
+          );
+
+        }
 
       },
       child: Container(

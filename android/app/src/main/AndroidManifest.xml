@@ -6,7 +6,7 @@
 
 
     <application
-        android:label="kljcafe_customers"
+        android:label="KLJ Cafe Customers"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
