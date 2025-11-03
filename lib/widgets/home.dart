@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kljcafe_customers/widgets/comingsoon.dart';
+import 'package:kljcafe_customers/widgets/profile.dart';
 import 'package:kljcafe_customers/widgets/qrcodescanner.dart';
 import 'package:kljcafe_customers/widgets/referal_page.dart';
 import 'package:kljcafe_customers/widgets/wallet_page.dart';
@@ -43,13 +44,31 @@ class _CafeHomePageState extends State<CafeHomePage> {
 
           ],
         ),
-        actions: const [
-          Icon(Icons.notifications_none, color: Colors.black),
-          SizedBox(width: 12),
+        actions: [
+          //lchange.png
 
 
-          Icon(Icons.person, color: Colors.black),
-          SizedBox(width: 12),
+          const Icon(Icons.language, color: Colors.black),
+          const SizedBox(width: 12),
+          const Icon(Icons.notifications_none, color: Colors.black),
+          const SizedBox(width: 12),
+
+
+          GestureDetector(
+            onTap: (){
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>  Profile(),
+                ),
+              );
+
+
+            },
+
+        child:  const Icon(Icons.person, color: Colors.black)),
+          const SizedBox(width: 12),
         ],
       ),
       body: SingleChildScrollView(
