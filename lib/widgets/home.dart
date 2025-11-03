@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kljcafe_customers/widgets/comingsoon.dart';
 import 'package:kljcafe_customers/widgets/qrcodescanner.dart';
+import 'package:kljcafe_customers/widgets/referal_page.dart';
 import 'package:kljcafe_customers/widgets/wallet_page.dart';
 
 import 'foodmenu.dart';
@@ -140,7 +141,14 @@ class _CafeHomePageState extends State<CafeHomePage> {
           padding:  EdgeInsets.all(10),
           child:  ElevatedButton(
               onPressed: () {
-                print('Styled Button Pressed!');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>  ReferalPage(),
+                  ),
+                );
+
+
               },
               style: ElevatedButton.styleFrom(
 
@@ -241,6 +249,14 @@ class _CafeHomePageState extends State<CafeHomePage> {
                   color: Colors.black87,
                   fontWeight: FontWeight.w400),
             ),
+            const SizedBox(height: 5),
+            (title.compareTo("Wallet")==0)?   Text(
+              "₹ 12560.00",
+              style: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.green,
+                  fontWeight: FontWeight.bold),
+            ):Container(),
           ],
         ),
       ),
