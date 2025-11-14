@@ -1,8 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:kljcafe_customers/web/authrepository.dart';
 import 'package:kljcafe_customers/widgets/login.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'bloc/login_bloc/login_bloc.dart';
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => LoginBloc(AuthRepository())),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
