@@ -34,3 +34,13 @@ class RegistrationEvent extends AuthEvent {
 
 
 }
+
+
+class OTPVerificationEvent extends AuthEvent {
+
+  final String token;
+
+  OTPVerificationEvent(this.token);
+
+
+}

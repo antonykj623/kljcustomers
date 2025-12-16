@@ -54,4 +54,27 @@ class WebCallRepository {
       throw Exception(" failed. Status: ${response.statusCode}");
     }
   }
+
+  static Future<Map<String, dynamic>> submitUserStatus(String method,String token) async {
+
+    apiUrl = APICredentials.baseurl+method;
+
+
+
+    final response = await http.get(
+      Uri.parse(apiUrl),
+      headers: {
+        "Authorization": token.toString(),
+
+
+      },
+
+    );
+
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      throw Exception(" failed. Status: ${response.statusCode}");
+    }
+  }
 }

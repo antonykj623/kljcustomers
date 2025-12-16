@@ -102,5 +102,30 @@ mp['mobile']=event.phone;
         emit(RegisterFailure("Something went wrong: $e"));
       }
     });
+
+    on<OTPVerificationEvent>((event, emit) async {
+      emit(OTPVerificationLoading());
+
+      try {
+
+
+
+
+        final data = await WebCallRepository.submitUserStatus(APICredentials.registerapi,event.token);
+        RegisterTokenEntity userTokenEntity=RegisterTokenEntity.fromJson(data);
+
+        if (userTokenEntity.status == 1) {
+
+
+
+
+          emit(OTPVerificationSuccess(userTokenEntity));
+        } else {
+          emit(OTPVerificationFailure(data["message"] ?? "Invalid login"));
+        }
+      } catch (e) {
+        emit(OTPVerificationFailure("Something went wrong: $e"));
+      }
+    });
   }
 }

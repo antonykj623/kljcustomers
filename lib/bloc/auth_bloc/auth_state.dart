@@ -55,3 +55,20 @@ class RegisterFailure extends AuthState {
   final String error;
   RegisterFailure(this.error);
 }
+
+
+class OTPVerificationLoading extends AuthState {
+
+  OTPVerificationLoading();
+
+}
+
+class OTPVerificationSuccess extends AuthState {
+  RegisterTokenEntity user;
+  OTPVerificationSuccess(this.user);
+}
+
+class OTPVerificationFailure extends AuthState {
+  final String error;
+  OTPVerificationFailure(this.error);
+}
