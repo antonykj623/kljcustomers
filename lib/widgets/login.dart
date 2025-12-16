@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kljcafe_customers/bloc/auth_bloc/auth_bloc.dart';
+import 'package:kljcafe_customers/domain/register_token_entity.dart';
 import 'package:kljcafe_customers/domain/user_entity.dart';
 import 'package:kljcafe_customers/utils/apputils.dart';
 
+import '../prefdata/sharedpref.dart';
+import '../web/api_credentials.dart';
 import 'home.dart';
 import 'otp.dart';
 
@@ -24,7 +27,32 @@ class _MobileLoginPageState extends State<MobileLoginPage> {
   void initState() {
     super.initState();
 
-    // 🎬 Initialize Video Controller (local asset)
+    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+
+    flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin>()
+        ?.requestNotificationsPermission();
+
+setRememberedPhone();
+  }
+
+
+  setRememberedPhone()
+  async {
+    await SharedPref().init();
+
+    String? a=SharedPref().getString(APICredentials.savedmobile);
+    setState(() {
+
+      if(a!=null) {
+
+        if(a.isNotEmpty) {
+          _mobileController.text = a.toString();
+        }
+      }
+    });
 
   }
 
@@ -96,12 +124,10 @@ class _MobileLoginPageState extends State<MobileLoginPage> {
                 // 🚀 Submit Button
 
                 BlocConsumer<AuthBloc, AuthState>(
-                  listener: (context, state) {
+                  listener: (context, state) async {
                     if (state is CheckMobileSuccess) {
                       AppUtils.hideLoader(context);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("Login Success")),
-                      );
+
 
                       UserEntity loginresponse=state.user;
 
@@ -126,6 +152,15 @@ class _MobileLoginPageState extends State<MobileLoginPage> {
                         //     builder: (context) =>  OtpPage(),
                         //   ),
                         // );
+
+                        String deviceid=await AppUtils.getDeviceDetails();
+
+                        BlocProvider.of<AuthBloc>(context).add(
+                          RegistrationEvent(
+                            _mobileController.text.trim(),deviceid
+
+                          ),
+                        );
                       }
 
 
@@ -146,10 +181,12 @@ class _MobileLoginPageState extends State<MobileLoginPage> {
 
                       if(state.error.compareTo("No user found")==0)
                         {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>  OtpPage(),
+                          String deviceid=await AppUtils.getDeviceDetails();
+
+                          BlocProvider.of<AuthBloc>(context).add(
+                            RegistrationEvent(
+                                _mobileController.text.trim(),deviceid
+
                             ),
                           );
                         }
@@ -168,6 +205,11 @@ class _MobileLoginPageState extends State<MobileLoginPage> {
                     else if(state is LoginSuccess)
                       {
                         AppUtils.hideLoader(context);
+                        await SharedPref().init();
+
+                        SharedPref().setString(APICredentials.savedmobile,_mobileController.text.toString());
+
+
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -181,6 +223,46 @@ class _MobileLoginPageState extends State<MobileLoginPage> {
                         AppUtils.hideLoader(context);
 
 
+                      }
+
+                    else if(state is RegisterSuccess)
+                      {
+                        RegisterTokenEntity reg=state.user;
+
+                        if(reg.status==1)
+                          {
+                            await SharedPref().init();
+
+                            SharedPref().setString(APICredentials.savedmobile,_mobileController.text.toString());
+
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>  OtpPage(reg.token!),
+                              ),
+                            );
+                          }
+                        else{
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("Something went wrong")),
+                          );
+                        }
+
+
+                      }
+                    else if(state is RegisterFailure)
+                      {
+                        AppUtils.showLoader(context);
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(state.error)),
+                        );
+                      }
+                    else if(state is RegisterLoading)
+                      {
+
+                        AppUtils.showLoader(context);
                       }
 
 

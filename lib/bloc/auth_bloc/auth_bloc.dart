@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:bloc/bloc.dart';
+import 'package:kljcafe_customers/domain/register_token_entity.dart';
 import 'package:kljcafe_customers/domain/user_entity.dart';
 import 'package:meta/meta.dart';
 
@@ -72,6 +73,33 @@ mp['mobile']=event.phone;
         }
       } catch (e) {
         emit(LoginFailure("Something went wrong: $e"));
+      }
+    });
+
+    on<RegistrationEvent>((event, emit) async {
+      emit(RegisterLoading());
+
+      try {
+
+        Map mp=new HashMap();
+        mp['mobile']=event.phone;
+        mp['deviceid']=event.deviceid;
+
+
+        final data = await WebCallRepository.post(mp,APICredentials.registerapi);
+        RegisterTokenEntity userTokenEntity=RegisterTokenEntity.fromJson(data);
+
+        if (userTokenEntity.status == 1) {
+
+
+
+
+          emit(RegisterSuccess(userTokenEntity));
+        } else {
+          emit(RegisterFailure(data["message"] ?? "Invalid login"));
+        }
+      } catch (e) {
+        emit(RegisterFailure("Something went wrong: $e"));
       }
     });
   }

@@ -23,3 +23,14 @@ class LoginButtonPressed extends AuthEvent {
 
 
 }
+
+
+class RegistrationEvent extends AuthEvent {
+  final String phone;
+  final String deviceid;
+
+
+  RegistrationEvent(this.phone,this.deviceid);
+
+
+}

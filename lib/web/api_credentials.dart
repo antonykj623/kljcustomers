@@ -4,11 +4,14 @@ class APICredentials{
 
   static String name="Name";
 
+  static String savedmobile="SavedMobile";
+
   static String baseurl="https://kljcafe.in/api/customer_api/";
 
 
   static String login="login.php";
   static String getUserDetailsByMobile="getUserDetailsByMobile.php";
+  static String registerapi="registerapi.php";
 
 
 

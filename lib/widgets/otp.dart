@@ -1,19 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:kljcafe_customers/utils/apputils.dart';
 import 'package:pinput/pinput.dart';
 
+import '../utils/notification_service.dart';
 import 'home.dart';
 
 
 
 class OtpPage extends StatefulWidget {
-  const OtpPage({Key? key}) : super(key: key);
+
+  String token;
+
+
+   OtpPage(this.token) ;
 
   @override
-  State<OtpPage> createState() => _OtpPageState();
+  State<OtpPage> createState() => _OtpPageState(this.token);
 }
 
 class _OtpPageState extends State<OtpPage> {
+
+  String token;
+
+
+  _OtpPageState(this.token);
+
   final TextEditingController _otpController = TextEditingController();
+
+  String otpcode="";
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    otpcode=AppUtils.getOTPcode();
+    NotificationService.showSimpleNotification(
+      title: 'Hello 👋',
+      body: 'Your OTP code is '+otpcode,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +105,7 @@ class _OtpPageState extends State<OtpPage> {
                 child: ElevatedButton(
                   onPressed: () {
                     // Replace this with your verification logic
-                    if (_otpController.text == "1234") {
+                    if (_otpController.text == otpcode) {
 
 
 

@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:kljcafe_customers/bloc/auth_bloc/auth_bloc.dart';
 import 'package:kljcafe_customers/prefdata/sharedpref.dart';
+import 'package:kljcafe_customers/utils/notification_service.dart';
 import 'package:kljcafe_customers/web/api_credentials.dart';
 import 'package:kljcafe_customers/widgets/home.dart';
 
 import 'package:kljcafe_customers/widgets/login.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'bloc/login_bloc/login_bloc.dart';
-void main() {
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await NotificationService.init();
   runApp(
     MultiBlocProvider(
       providers: [

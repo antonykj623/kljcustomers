@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'dart:io';
@@ -111,6 +113,14 @@ String data="";
 
 }
 
+
+static String getOTPcode()
+{
+  final random = Random();
+  int a= 1000 + random.nextInt(9000);
+
+  return a.toString();
+}
 
 
 

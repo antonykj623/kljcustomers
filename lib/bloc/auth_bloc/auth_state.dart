@@ -38,3 +38,20 @@ class LoginFailure extends AuthState {
   final String error;
   LoginFailure(this.error);
 }
+
+
+class RegisterLoading extends AuthState {
+
+  RegisterLoading();
+
+}
+
+class RegisterSuccess extends AuthState {
+  RegisterTokenEntity user;
+  RegisterSuccess(this.user);
+}
+
+class RegisterFailure extends AuthState {
+  final String error;
+  RegisterFailure(this.error);
+}

@@ -4,7 +4,7 @@ import 'package:kljcafe_customers/widgets/profile.dart';
 import 'package:kljcafe_customers/widgets/qrcodescanner.dart';
 import 'package:kljcafe_customers/widgets/referal_page.dart';
 import 'package:kljcafe_customers/widgets/wallet_page.dart';
-
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'foodmenu.dart';
 
 class CafeHomePage extends StatefulWidget {
@@ -24,6 +24,14 @@ class _CafeHomePageState extends State<CafeHomePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+
+    flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin>()
+        ?.requestNotificationsPermission();
   }
 
 
