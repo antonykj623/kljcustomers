@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kljcafe_customers/bloc/auth_bloc/auth_bloc.dart';
+import 'package:kljcafe_customers/domain/user_entity.dart';
+import 'package:kljcafe_customers/utils/apputils.dart';
 
+import 'home.dart';
 import 'otp.dart';
 
 class MobileLoginPage extends StatefulWidget {
@@ -78,6 +83,9 @@ class _MobileLoginPageState extends State<MobileLoginPage> {
                       value: _rememberMe,
                       onChanged: (value) {
                         setState(() => _rememberMe = value ?? false);
+
+
+
                       },
                     ),
                     const Text("Remember me"),
@@ -86,48 +94,154 @@ class _MobileLoginPageState extends State<MobileLoginPage> {
                 const SizedBox(height: 10),
 
                 // 🚀 Submit Button
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
+
+                BlocConsumer<AuthBloc, AuthState>(
+                  listener: (context, state) {
+                    if (state is CheckMobileSuccess) {
+                      AppUtils.hideLoader(context);
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                              'Submitted: ${_mobileController.text}, Remember me: $_rememberMe'),
-                        ),
+                        SnackBar(content: Text("Login Success")),
                       );
 
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>  OtpPage(),
+                      UserEntity loginresponse=state.user;
+
+                      if(loginresponse.status==1)
+                      {
+
+
+
+                        BlocProvider.of<AuthBloc>(context).add(
+                          LoginButtonPressed(
+                            _mobileController.text.trim(),
+
+                          ),
+                        );
+
+
+                      }
+                      else{
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) =>  OtpPage(),
+                        //   ),
+                        // );
+                      }
+
+
+
+                    }
+                    else if(state is CheckMobileLoading)
+                    {
+
+                      AppUtils.showLoader(context);
+                    }
+
+
+
+
+                    else if (state is CheckMobileFailure) {
+
+                      AppUtils.hideLoader(context);
+
+                      if(state.error.compareTo("No user found")==0)
+                        {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>  OtpPage(),
+                            ),
+                          );
+                        }
+                      else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(state.error)),
+                        );
+                      }
+                    }
+
+
+                    else if(state is LoginLoading)
+                      {
+                        AppUtils.showLoader(context);
+                      }
+                    else if(state is LoginSuccess)
+                      {
+                        AppUtils.hideLoader(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>  CafeHomePage(),
+                          ),
+                        );
+
+                      }
+                    else if(state is LoginFailure)
+                      {
+                        AppUtils.hideLoader(context);
+
+
+                      }
+
+
+
+
+                  },
+                  builder: (context, state) {
+                    return   SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {
+
+
+                          if(_mobileController.text.isNotEmpty) {
+                            BlocProvider.of<AuthBloc>(context).add(
+                              CheckUserExists(
+                                _mobileController.text.trim(),
+
+                              ),
+                            );
+                          }
+                          else{
+
+                            AppUtils.showSingleButtonAlert(context, "KLJ cafe", "Please enter mobile number");
+                          }
+
+
+
+
+
+
+
+
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF007BFF),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shadowColor: Colors.grey.shade400,
+                          elevation: 4,
                         ),
-                      );
-
-
-
-
-
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF007BFF),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
+                        child: const Text(
+                          "Submit",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shadowColor: Colors.grey.shade400,
-                      elevation: 4,
-                    ),
-                    child: const Text(
-                      "Submit",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
+                    );
+                  },
                 ),
+
+
+
+
+
+
               ],
             ),
           ),

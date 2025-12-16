@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:kljcafe_customers/web/authrepository.dart';
+import 'package:kljcafe_customers/bloc/auth_bloc/auth_bloc.dart';
+import 'package:kljcafe_customers/prefdata/sharedpref.dart';
+import 'package:kljcafe_customers/web/api_credentials.dart';
+import 'package:kljcafe_customers/widgets/home.dart';
+
 import 'package:kljcafe_customers/widgets/login.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -8,7 +12,9 @@ void main() {
   runApp(
     MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => LoginBloc(AuthRepository())),
+
+
+        BlocProvider(create: (_) => AuthBloc()),
       ],
       child: const MyApp(),
     ),
@@ -92,12 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     Future.delayed(Duration(seconds: 3),() {
 
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) =>  MobileLoginPage(),
-        ),
-      );
+    checkPage();
 
 
 
@@ -105,7 +106,44 @@ class _MyHomePageState extends State<MyHomePage> {
     },);
   }
 
+  checkPage()
+  async {
 
+    await SharedPref().init();
+
+    String? token= SharedPref().getString(APICredentials.apptoken);
+
+
+    if(token!=null)
+    {
+
+      if(token.toString().isNotEmpty)
+      {
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => CafeHomePage()),
+        );
+      }
+      else{
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => MobileLoginPage()),
+        );
+
+      }
+
+
+    }
+    else{
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => MobileLoginPage()),
+      );
+    }
+
+  }
 
 
   @override
@@ -128,6 +166,9 @@ class _MyHomePageState extends State<MyHomePage> {
             Image.asset("assets/kljcafe.jpeg",width: 150,height: 150,),
 
 
+            SizedBox(height: 30,),
+
+            CircularProgressIndicator()
           ],
         ),
       ),
