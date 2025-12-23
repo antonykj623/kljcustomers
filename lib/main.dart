@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kljcafe_customers/bloc/auth_bloc/auth_bloc.dart';
+import 'package:kljcafe_customers/bloc/wallet_bloc/wallet_bloc.dart';
 import 'package:kljcafe_customers/prefdata/sharedpref.dart';
 import 'package:kljcafe_customers/utils/notification_service.dart';
 import 'package:kljcafe_customers/web/api_credentials.dart';
@@ -7,6 +8,8 @@ import 'package:kljcafe_customers/widgets/home.dart';
 
 import 'package:kljcafe_customers/widgets/login.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'bloc/cafemenu/cafemenu_bloc.dart';
 
 
 Future<void> main() async {
@@ -18,6 +21,10 @@ Future<void> main() async {
 
 
         BlocProvider(create: (_) => AuthBloc()),
+        BlocProvider(create: (_) => WalletBloc()),
+        BlocProvider(create: (_) => CafemenuBloc()),
+
+
       ],
       child: const MyApp(),
     ),
@@ -112,9 +119,9 @@ class _MyHomePageState extends State<MyHomePage> {
   checkPage()
   async {
 
-    await SharedPref().init();
 
-    String? token= SharedPref().getString(APICredentials.apptoken);
+
+    String? token= await SharedPref.getString(APICredentials.apptoken);
 
 
     if(token!=null)

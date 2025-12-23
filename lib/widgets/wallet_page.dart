@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../bloc/wallet_bloc/wallet_bloc.dart';
+
 
 class WalletPage extends StatefulWidget {
   const WalletPage({super.key});
@@ -9,6 +13,25 @@ class WalletPage extends StatefulWidget {
 
 class _WalletPageState extends State<WalletPage> {
   int _selectedIndex = 0;
+
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+
+
+    BlocProvider.of<WalletBloc>(context).add(
+      GetWalletTransactions(
+
+
+      ),
+    );
+  }
+
+
 
   @override
   Widget build(BuildContext context) {

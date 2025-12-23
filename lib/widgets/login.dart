@@ -41,9 +41,9 @@ setRememberedPhone();
 
   setRememberedPhone()
   async {
-    await SharedPref().init();
 
-    String? a=SharedPref().getString(APICredentials.savedmobile);
+
+    String? a=await SharedPref.getString(APICredentials.savedmobile);
     setState(() {
 
       if(a!=null) {
@@ -205,9 +205,9 @@ setRememberedPhone();
                     else if(state is LoginSuccess)
                       {
                         AppUtils.hideLoader(context);
-                        await SharedPref().init();
 
-                        SharedPref().setString(APICredentials.savedmobile,_mobileController.text.toString());
+
+                        SharedPref.setString(APICredentials.savedmobile,_mobileController.text.toString());
 
 
                         Navigator.push(
@@ -231,9 +231,9 @@ setRememberedPhone();
 
                         if(reg.status==1)
                           {
-                            await SharedPref().init();
 
-                            SharedPref().setString(APICredentials.savedmobile,_mobileController.text.toString());
+
+                            SharedPref.setString(APICredentials.savedmobile,_mobileController.text.toString());
 
                             Navigator.push(
                               context,

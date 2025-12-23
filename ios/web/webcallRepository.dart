@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:kljcafe_customers/prefdata/sharedpref.dart';
 import 'package:kljcafe_employee/web/api_credentials.dart';
 
 import '../prefdata/sharedpref.dart';
+import 'api_credentials.dart';
 
 class WebCallRepository {
   static String apiUrl = APICredentials.baseurl;
@@ -10,9 +12,9 @@ class WebCallRepository {
   static Future<Map<String, dynamic>> post(var request,String method) async {
 
     apiUrl = APICredentials.baseurl+method;
-    await SharedPref().init();
 
-    String? token= SharedPref().getString(APICredentials.apptoken);
+
+    String? token= await SharedPref.getString(APICredentials.apptoken);
 
     final response = await http.post(
       Uri.parse(apiUrl),
@@ -33,9 +35,9 @@ class WebCallRepository {
 
     apiUrl = APICredentials.baseurl+method;
 
-    await SharedPref().init();
 
-    String? token= SharedPref().getString(APICredentials.apptoken);
+
+    String? token= await SharedPref.getString(APICredentials.apptoken);
 
     final response = await http.get(
         Uri.parse(apiUrl),

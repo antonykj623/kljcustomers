@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:kljcafe_customers/bloc/wallet_bloc/wallet_bloc.dart';
+import 'package:kljcafe_customers/domain/wallet_balance_entity.dart';
+import 'package:kljcafe_customers/utils/apputils.dart';
 import 'package:kljcafe_customers/widgets/comingsoon.dart';
 import 'package:kljcafe_customers/widgets/profile.dart';
 import 'package:kljcafe_customers/widgets/qrcodescanner.dart';
@@ -6,6 +9,7 @@ import 'package:kljcafe_customers/widgets/referal_page.dart';
 import 'package:kljcafe_customers/widgets/wallet_page.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'foodmenu.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CafeHomePage extends StatefulWidget {
   const CafeHomePage({Key? key}) : super(key: key);
@@ -18,6 +22,8 @@ class _CafeHomePageState extends State<CafeHomePage> {
   int currentIndex = 0;
 
   List<String>adimages=["assets/w1.png","assets/w2.png"];
+
+  String walletbalance="0.00";
 
 
   @override
@@ -32,6 +38,14 @@ class _CafeHomePageState extends State<CafeHomePage> {
         .resolvePlatformSpecificImplementation<
         AndroidFlutterLocalNotificationsPlugin>()
         ?.requestNotificationsPermission();
+
+
+    BlocProvider.of<WalletBloc>(context).add(
+      checkWalletBalanceEvent(
+
+
+      ),
+    );
   }
 
 
@@ -277,13 +291,59 @@ class _CafeHomePageState extends State<CafeHomePage> {
                   fontWeight: FontWeight.w400),
             ),
             const SizedBox(height: 5),
-            (title.compareTo("Wallet")==0)?   Text(
-              "₹ 12560.00",
-              style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.green,
-                  fontWeight: FontWeight.bold),
-            ):Container(),
+            (title.compareTo("Wallet")==0)?
+
+            BlocConsumer<WalletBloc, WalletState>(
+              listener: (context, state) async {
+
+
+                if(state is WalletBalanceSuccess)
+                  {
+                  //  AppUtils.hideLoader(context);
+
+                    WalletBalanceEntity wb=state.walletBalanceEntity;
+                    setState(() {
+
+                      if(wb.status==1)
+                        {
+
+                          walletbalance=wb.data!.balance.toString();
+                        }
+
+                    });
+
+                  }
+                else if(state is WalletBalanceFailure)
+                  {
+                  //  AppUtils.hideLoader(context);
+
+                  }
+                else if(state is WalletBalanceLoading)
+                  {
+
+                   // AppUtils.showLoader(context);
+                  }
+
+
+
+              },
+              builder: (context, state) {
+                return          Text(
+                  "₹ "+walletbalance,
+                  style: const TextStyle(
+                      fontSize: 17,
+                      color: Colors.deepOrange,
+                      fontWeight: FontWeight.bold),
+                );
+              },
+            )
+
+
+
+
+
+
+                :Container(),
           ],
         ),
       ),

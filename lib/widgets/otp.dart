@@ -117,9 +117,9 @@ class _OtpPageState extends State<OtpPage> {
 
                     if(loginresponse.status==1)
                     {
-                      await SharedPref().init();
 
-                      SharedPref().setString(APICredentials.apptoken,loginresponse.token.toString());
+
+                      SharedPref.setString(APICredentials.apptoken,loginresponse.token.toString());
 
                       Navigator.pushReplacement(
                         context,

@@ -62,9 +62,9 @@ mp['mobile']=event.phone;
 
         if (userTokenEntity.status == 1) {
 
-          await SharedPref().init();
 
-          SharedPref().setString(APICredentials.apptoken,userTokenEntity.data!.token!);
+
+          SharedPref.setString(APICredentials.apptoken,userTokenEntity.data!.token!);
 
 
           emit(LoginSuccess(userTokenEntity));

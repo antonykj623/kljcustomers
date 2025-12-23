@@ -11,9 +11,9 @@ class WebCallRepository {
   static Future<Map<String, dynamic>> post(var request,String method) async {
 
     apiUrl = APICredentials.baseurl+method;
-    await SharedPref().init();
 
-    String? token= SharedPref().getString(APICredentials.apptoken);
+
+    String? token= await SharedPref.getString(APICredentials.apptoken);
 
     final response = await http.post(
       Uri.parse(apiUrl),
@@ -34,9 +34,9 @@ class WebCallRepository {
 
     apiUrl = APICredentials.baseurl+method;
 
-    await SharedPref().init();
 
-    String? token= SharedPref().getString(APICredentials.apptoken);
+
+    String? token= await SharedPref.getString(APICredentials.apptoken);
 
     final response = await http.get(
         Uri.parse(apiUrl),
