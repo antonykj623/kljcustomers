@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kljcafe_customers/domain/wallet_transaction_entity.dart';
 
 import '../bloc/wallet_bloc/wallet_bloc.dart';
+import '../domain/wallet_balance_entity.dart';
+import '../utils/apputils.dart';
 
 
 class WalletPage extends StatefulWidget {
@@ -13,7 +16,9 @@ class WalletPage extends StatefulWidget {
 
 class _WalletPageState extends State<WalletPage> {
   int _selectedIndex = 0;
+  List<WalletTransactionData>? data = [];
 
+  String walletbalance="0";
 
 
   @override
@@ -22,6 +27,12 @@ class _WalletPageState extends State<WalletPage> {
     super.initState();
 
 
+    BlocProvider.of<WalletBloc>(context).add(
+      checkWalletBalanceEvent(
+
+
+      ),
+    );
 
     BlocProvider.of<WalletBloc>(context).add(
       GetWalletTransactions(
@@ -51,84 +62,173 @@ class _WalletPageState extends State<WalletPage> {
           )
         ],
       ),
-      body:  Column(
+      body:      BlocConsumer<WalletBloc, WalletState>(
+        listener: (context, state) async {
+          if (state is WalletTransactionSuccess) {
+            AppUtils.hideLoader(context);
+
+
+            WalletTransactionEntity loginresponse=state.walletTransactionEntity;
+
+            if(loginresponse.status==1)
+            {
+
+
+              setState(() {
+
+data!.addAll(loginresponse.data!);
+
+              });
+
+
+
+
+            }
+            else{
+
+
+
+
+            }
+
+
+
+          }
+          else if(state is WalletTransactionLoading)
+          {
+
+            AppUtils.showLoader(context);
+          }
+          else if (state is WalletTransactionFailure) {
+            AppUtils.showLoader(context);
+          }
+
+
+
+
+
+
+
+
+
+        },
+        builder: (context, state) {
+          return   Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Balance Card
               Padding( padding: EdgeInsets.all(8),
-              child:Container(
-                width: double.infinity,
-         
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: Colors.blueAccent,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child:
+                  child:Container(
+                    width: double.infinity,
 
-Row(
-  children: [
-    Expanded(child:Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Current balance',
-          style: TextStyle(color: Colors.white70, fontSize: 14),
-        ),
-        const SizedBox(height: 10),
-        const Text(
-          '₹ 12,590.90',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 8),
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.blueAccent,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child:
+                    BlocConsumer<WalletBloc, WalletState>(
+                      listener: (context, state) async {
 
 
-      ],
-    ),flex: 2, )
-,
+                        if(state is WalletBalanceSuccess)
+                        {
+                          //  AppUtils.hideLoader(context);
 
-    Expanded(child:Stack(
+                          WalletBalanceEntity wb=state.walletBalanceEntity;
+                          setState(() {
 
-      children: [
+                            if(wb.status==1)
+                            {
 
-        Align(
-          alignment: FractionalOffset.center,
-          child:   Padding(
-              padding:  EdgeInsets.all(4),
-              child:  ElevatedButton(
-                onPressed: () {
-                  print('Styled Button Pressed!');
-                },
-                style: ElevatedButton.styleFrom(
+                              walletbalance=wb.data!.balance.toString();
+                            }
 
+                          });
 
-                  backgroundColor: Colors.redAccent, // button color
-                  foregroundColor: Colors.white, // text color
-                  padding: EdgeInsets.all(8),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                child: Text(
-                  'Send money',
-                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
-                ),
-              )
-          ) ,
-        )
+                        }
+                        else if(state is WalletBalanceFailure)
+                        {
+                          //  AppUtils.hideLoader(context);
 
-      ],
+                        }
+                        else if(state is WalletBalanceLoading)
+                        {
+
+                          // AppUtils.showLoader(context);
+                        }
 
 
-    ),flex: 1, )
-  ],
-)
-                ,
-              ) ),
+
+                      },
+                      builder: (context, state) {
+                        return      Row(
+                          children: [
+                            Expanded(child:Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Current balance',
+                                  style: TextStyle(color: Colors.white70, fontSize: 14),
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  '₹ '+walletbalance.toString(),
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+
+
+                              ],
+                            ),flex: 2, )
+                            ,
+
+                            Expanded(child:Stack(
+
+                              children: [
+
+                                Align(
+                                  alignment: FractionalOffset.center,
+                                  child:   Padding(
+                                      padding:  EdgeInsets.all(4),
+                                      child:  ElevatedButton(
+                                        onPressed: () {
+                                          print('Styled Button Pressed!');
+                                        },
+                                        style: ElevatedButton.styleFrom(
+
+
+                                          backgroundColor: Colors.redAccent, // button color
+                                          foregroundColor: Colors.white, // text color
+                                          padding: EdgeInsets.all(8),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(12),
+                                          ),
+                                        ),
+                                        child: Text(
+                                          'Send money',
+                                          style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                                        ),
+                                      )
+                                  ) ,
+                                )
+
+                              ],
+
+
+                            ),flex: 1, )
+                          ],
+                        );
+                      },
+                    )
+
+
+                    ,
+                  ) ),
 
 
 
@@ -138,14 +238,14 @@ Row(
 
               Expanded(child: ListView.builder(
                 padding: const EdgeInsets.all( 10),
-                itemCount: 5,
+                itemCount: data!.length,
                 primary: false,
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
 
                   return Card(
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                    margin: const EdgeInsets.only(bottom: 12),
+                    margin:  EdgeInsets.only(bottom: 12),
                     child: ListTile(
                       leading: CircleAvatar(
                         backgroundColor: Colors.grey[200],
@@ -154,10 +254,13 @@ Row(
                           style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
                         ),
                       ),
-                      title: Text("Money Added to Wallet", style: const TextStyle(fontWeight: FontWeight.bold)),
+                      title: Text(data![index].description!, style: const TextStyle(fontWeight: FontWeight.bold)),
 
 
-                      trailing:  Text("+250", style: const TextStyle(fontWeight: FontWeight.bold)),
+                      trailing: (data![index].credit.toString().compareTo("0")==0)? Text("-"+data![index].debit.toString(), style:  TextStyle(fontWeight: FontWeight.bold,color: Colors.red)) :
+
+                      Text("+"+data![index].credit.toString(), style:  TextStyle(fontWeight: FontWeight.bold,color: Colors.green))
+                      ,
 
                     ),
                   );
@@ -167,7 +270,15 @@ Row(
 
               ,
             ],
-          )
+          );
+        },
+      ),
+
+
+
+
+
+
 
 
       // Bottom Navigation Bar

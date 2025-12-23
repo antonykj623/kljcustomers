@@ -25,10 +25,10 @@ class WalletTransactionEntity {
 class WalletTransactionData {
 	String? id = '';
 	@JSONField(name: "user_id")
-	String? userId = '';
-	String? credit = '';
-	String? debit = '';
-	String? balance = '';
+	String? userId = '0';
+	String? credit = '0';
+	String? debit = '0';
+	String? balance = '0';
 	String? description = '';
 	@JSONField(name: "created_date")
 	String? createdDate = '';

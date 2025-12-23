@@ -332,7 +332,7 @@ class _CafeHomePageState extends State<CafeHomePage> {
                   "₹ "+walletbalance,
                   style: const TextStyle(
                       fontSize: 17,
-                      color: Colors.deepOrange,
+                      color: Colors.black,
                       fontWeight: FontWeight.bold),
                 );
               },
