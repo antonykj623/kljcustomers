@@ -69,6 +69,7 @@ class _WalletPageState extends State<WalletPage> {
 
 
             WalletTransactionEntity loginresponse=state.walletTransactionEntity;
+            WalletTransactionBalanceData walletTransactionBalanceData=loginresponse.balanceData!;
 
             if(loginresponse.status==1)
             {
@@ -77,6 +78,7 @@ class _WalletPageState extends State<WalletPage> {
               setState(() {
 
 data!.addAll(loginresponse.data!);
+walletbalance=walletTransactionBalanceData.balance.toString();
 
               });
 
@@ -127,103 +129,66 @@ data!.addAll(loginresponse.data!);
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child:
-                    BlocConsumer<WalletBloc, WalletState>(
-                      listener: (context, state) async {
-
-
-                        if(state is WalletBalanceSuccess)
-                        {
-                          //  AppUtils.hideLoader(context);
-
-                          WalletBalanceEntity wb=state.walletBalanceEntity;
-                          setState(() {
-
-                            if(wb.status==1)
-                            {
-
-                              walletbalance=wb.data!.balance.toString();
-                            }
-
-                          });
-
-                        }
-                        else if(state is WalletBalanceFailure)
-                        {
-                          //  AppUtils.hideLoader(context);
-
-                        }
-                        else if(state is WalletBalanceLoading)
-                        {
-
-                          // AppUtils.showLoader(context);
-                        }
-
-
-
-                      },
-                      builder: (context, state) {
-                        return      Row(
+                    Row(
+                      children: [
+                        Expanded(child:Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Expanded(child:Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  'Current balance',
-                                  style: TextStyle(color: Colors.white70, fontSize: 14),
-                                ),
-                                const SizedBox(height: 10),
-                                Text(
-                                  '₹ '+walletbalance.toString(),
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
+                            const Text(
+                              'Current balance',
+                              style: TextStyle(color: Colors.white70, fontSize: 14),
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                              '₹ '+walletbalance.toString(),
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
 
 
-                              ],
-                            ),flex: 2, )
-                            ,
-
-                            Expanded(child:Stack(
-
-                              children: [
-
-                                Align(
-                                  alignment: FractionalOffset.center,
-                                  child:   Padding(
-                                      padding:  EdgeInsets.all(4),
-                                      child:  ElevatedButton(
-                                        onPressed: () {
-                                          print('Styled Button Pressed!');
-                                        },
-                                        style: ElevatedButton.styleFrom(
-
-
-                                          backgroundColor: Colors.redAccent, // button color
-                                          foregroundColor: Colors.white, // text color
-                                          padding: EdgeInsets.all(8),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(12),
-                                          ),
-                                        ),
-                                        child: Text(
-                                          'Send money',
-                                          style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
-                                        ),
-                                      )
-                                  ) ,
-                                )
-
-                              ],
-
-
-                            ),flex: 1, )
                           ],
-                        );
-                      },
+                        ),flex: 2, )
+                        ,
+
+                        Expanded(child:Stack(
+
+                          children: [
+
+                            Align(
+                              alignment: FractionalOffset.center,
+                              child:   Padding(
+                                  padding:  EdgeInsets.all(4),
+                                  child:  ElevatedButton(
+                                    onPressed: () {
+                                      print('Styled Button Pressed!');
+                                    },
+                                    style: ElevatedButton.styleFrom(
+
+
+                                      backgroundColor: Colors.redAccent, // button color
+                                      foregroundColor: Colors.white, // text color
+                                      padding: EdgeInsets.all(8),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      'Send money',
+                                      style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                                    ),
+                                  )
+                              ) ,
+                            )
+
+                          ],
+
+
+                        ),flex: 1, )
+                      ],
                     )
 
 
@@ -249,10 +214,7 @@ data!.addAll(loginresponse.data!);
                     child: ListTile(
                       leading: CircleAvatar(
                         backgroundColor: Colors.grey[200],
-                        child: Text(
-                          "",
-                          style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-                        ),
+                        child: Icon(Icons.wallet,color: Colors.green,)
                       ),
                       title: Text(data![index].description!, style: const TextStyle(fontWeight: FontWeight.bold)),
 

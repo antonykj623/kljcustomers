@@ -8,6 +8,8 @@ class WalletTransactionEntity {
 	int? status = 0;
 	String? message = '';
 	List<WalletTransactionData>? data = [];
+	@JSONField(name: "balance_data")
+	WalletTransactionBalanceData? balanceData;
 
 	WalletTransactionEntity();
 
@@ -25,10 +27,10 @@ class WalletTransactionEntity {
 class WalletTransactionData {
 	String? id = '';
 	@JSONField(name: "user_id")
-	String? userId = '0';
-	String? credit = '0';
-	String? debit = '0';
-	String? balance = '0';
+	String? userId = '';
+	String? credit = '';
+	String? debit = '';
+	String? balance = '';
 	String? description = '';
 	@JSONField(name: "created_date")
 	String? createdDate = '';
@@ -38,6 +40,30 @@ class WalletTransactionData {
 	factory WalletTransactionData.fromJson(Map<String, dynamic> json) => $WalletTransactionDataFromJson(json);
 
 	Map<String, dynamic> toJson() => $WalletTransactionDataToJson(this);
+
+	@override
+	String toString() {
+		return jsonEncode(this);
+	}
+}
+
+@JsonSerializable()
+class WalletTransactionBalanceData {
+	String? id = '0';
+	@JSONField(name: "user_id")
+	String? userId = '0';
+	String? credit = '0';
+	String? debit = '0';
+	String? balance = '0';
+	String? description = '';
+	@JSONField(name: "created_date")
+	String? createdDate = '';
+
+	WalletTransactionBalanceData();
+
+	factory WalletTransactionBalanceData.fromJson(Map<String, dynamic> json) => $WalletTransactionBalanceDataFromJson(json);
+
+	Map<String, dynamic> toJson() => $WalletTransactionBalanceDataToJson(this);
 
 	@override
 	String toString() {

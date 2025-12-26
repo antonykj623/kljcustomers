@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:kljcafe_customers/bloc/slider_bloc/slider_bloc.dart';
 import 'package:kljcafe_customers/bloc/wallet_bloc/wallet_bloc.dart';
+import 'package:kljcafe_customers/domain/sliders_entity.dart';
 import 'package:kljcafe_customers/domain/wallet_balance_entity.dart';
 import 'package:kljcafe_customers/utils/apputils.dart';
+import 'package:kljcafe_customers/web/api_credentials.dart';
 import 'package:kljcafe_customers/widgets/comingsoon.dart';
 import 'package:kljcafe_customers/widgets/profile.dart';
 import 'package:kljcafe_customers/widgets/qrcodescanner.dart';
@@ -24,7 +27,7 @@ class _CafeHomePageState extends State<CafeHomePage> {
   List<String>adimages=["assets/w1.png","assets/w2.png"];
 
   String walletbalance="0.00";
-
+  List<SlidersData> sliderdata = [];
 
   @override
   void initState() {
@@ -42,6 +45,13 @@ class _CafeHomePageState extends State<CafeHomePage> {
 
     BlocProvider.of<WalletBloc>(context).add(
       checkWalletBalanceEvent(
+
+
+      ),
+    );
+
+    BlocProvider.of<SliderBloc>(context).add(
+      FetchSliders(
 
 
       ),
@@ -99,54 +109,120 @@ class _CafeHomePageState extends State<CafeHomePage> {
             const SizedBox(height: 20),
 
             // Carousel (logo + dots)
-            Column(
-              children: [
-                SizedBox(
-                  child: PageView.builder(
-                    itemCount: adimages.length,
-                    onPageChanged: (index) {
-                      setState(() {
-                        currentIndex = index;
-                      });
-                    },
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
-                          child: Image.asset(
-                            adimages[index],
-                            fit: BoxFit.cover,
-                            width: double.infinity,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                  width: double.infinity,
-                  height: 250,
 
-                ),
-                const SizedBox(height: 10),
+            BlocConsumer<SliderBloc, SliderState>(
+              listener: (context, state) async {
+                if (state is SliderSuccess) {
+                  AppUtils.hideLoader(context);
 
-                // Indicator dots
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(adimages.length, (index) {
-                    return Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 4),
-                      width: 10,
-                      height: 10,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color:
-                        currentIndex == index ? Colors.brown : Colors.grey,
-                      ),
+
+                  SlidersEntity loginresponse=state.cafeMenuEntity;
+
+                  if(loginresponse.status==1)
+                  {
+
+
+                    setState(() {
+
+                      sliderdata.clear();
+                      sliderdata.addAll(loginresponse.data!);
+                    });
+
+
+
+
+                  }
+
+
+
+
+                }
+                else if(state is SliderLoading)
+                {
+
+                  AppUtils.showLoader(context);
+                }
+
+
+
+
+                else if (state is SliderFailure) {
+
+                  AppUtils.hideLoader(context);
+
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(state.error)),
                     );
-                  }),
-                ),
-              ],
+
+                }
+
+
+
+
+
+
+
+
+
+
+              },
+              builder: (context, state) {
+                return   Column(
+                  children: [
+
+                    SizedBox(
+                      child: PageView.builder(
+                        itemCount: sliderdata.length,
+                        onPageChanged: (index) {
+                          setState(() {
+                            currentIndex = index;
+                          });
+                        },
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: Image.network(
+                               APICredentials.sliderimageurl+ sliderdata[index].image.toString(),
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                      width: double.infinity,
+                      height: 250,
+
+                    ),
+                    const SizedBox(height: 10),
+
+                    // Indicator dots
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(sliderdata.length, (index) {
+                        return Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 4),
+                          width: 10,
+                          height: 10,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color:
+                            currentIndex == index ? Colors.brown : Colors.grey,
+                          ),
+                        );
+                      }),
+                    ),
+                  ],
+                );
+              },
             ),
+
+
+
+
 
             const SizedBox(height: 20),
 
@@ -332,7 +408,7 @@ class _CafeHomePageState extends State<CafeHomePage> {
                   "₹ "+walletbalance,
                   style: const TextStyle(
                       fontSize: 17,
-                      color: Colors.black,
+                      color: Colors.green,
                       fontWeight: FontWeight.bold),
                 );
               },

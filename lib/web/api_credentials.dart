@@ -10,6 +10,8 @@ class APICredentials{
 
   static String productimagebaseurl="https://kljcafe.in/api/items/";
 
+  static String sliderimageurl="https://kljcafe.in/api/sliderimages/";
+
 
   static String login="login.php";
   static String getUserDetailsByMobile="getUserDetailsByMobile.php";
@@ -17,6 +19,7 @@ class APICredentials{
   static String getWalletBalance="getWalletBalance.php";
   static String getProducts="getProducts.php";
   static String getWalletTransactions="getWalletTransactions.php";
+  static String getSliders="getSliders.php";
 
 
 

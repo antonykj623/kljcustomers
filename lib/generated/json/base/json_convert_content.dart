@@ -6,6 +6,7 @@
 import 'package:flutter/material.dart' show debugPrint;
 import 'package:kljcafe_customers/domain/cafe_menu_entity.dart';
 import 'package:kljcafe_customers/domain/register_token_entity.dart';
+import 'package:kljcafe_customers/domain/sliders_entity.dart';
 import 'package:kljcafe_customers/domain/user_entity.dart';
 import 'package:kljcafe_customers/domain/user_token_entity.dart';
 import 'package:kljcafe_customers/domain/wallet_balance_entity.dart';
@@ -155,6 +156,14 @@ class JsonConvert {
       return data.map<RegisterTokenEntity>((Map<String, dynamic> e) =>
           RegisterTokenEntity.fromJson(e)).toList() as M;
     }
+    if (<SlidersEntity>[] is M) {
+      return data.map<SlidersEntity>((Map<String, dynamic> e) =>
+          SlidersEntity.fromJson(e)).toList() as M;
+    }
+    if (<SlidersData>[] is M) {
+      return data.map<SlidersData>((Map<String, dynamic> e) =>
+          SlidersData.fromJson(e)).toList() as M;
+    }
     if (<UserEntity>[] is M) {
       return data.map<UserEntity>((Map<String, dynamic> e) =>
           UserEntity.fromJson(e)).toList() as M;
@@ -187,6 +196,10 @@ class JsonConvert {
       return data.map<WalletTransactionData>((Map<String, dynamic> e) =>
           WalletTransactionData.fromJson(e)).toList() as M;
     }
+    if (<WalletTransactionBalanceData>[] is M) {
+      return data.map<WalletTransactionBalanceData>((Map<String, dynamic> e) =>
+          WalletTransactionBalanceData.fromJson(e)).toList() as M;
+    }
 
     debugPrint("$M not found");
 
@@ -211,6 +224,8 @@ class JsonConvertClassCollection {
     (CafeMenuEntity).toString(): CafeMenuEntity.fromJson,
     (CafeMenuData).toString(): CafeMenuData.fromJson,
     (RegisterTokenEntity).toString(): RegisterTokenEntity.fromJson,
+    (SlidersEntity).toString(): SlidersEntity.fromJson,
+    (SlidersData).toString(): SlidersData.fromJson,
     (UserEntity).toString(): UserEntity.fromJson,
     (UserData).toString(): UserData.fromJson,
     (UserTokenEntity).toString(): UserTokenEntity.fromJson,
@@ -219,6 +234,8 @@ class JsonConvertClassCollection {
     (WalletBalanceData).toString(): WalletBalanceData.fromJson,
     (WalletTransactionEntity).toString(): WalletTransactionEntity.fromJson,
     (WalletTransactionData).toString(): WalletTransactionData.fromJson,
+    (WalletTransactionBalanceData).toString(): WalletTransactionBalanceData
+        .fromJson,
   };
 
   bool containsKey(String type) {

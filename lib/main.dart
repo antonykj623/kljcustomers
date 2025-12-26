@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kljcafe_customers/bloc/auth_bloc/auth_bloc.dart';
+import 'package:kljcafe_customers/bloc/slider_bloc/slider_bloc.dart';
 import 'package:kljcafe_customers/bloc/wallet_bloc/wallet_bloc.dart';
 import 'package:kljcafe_customers/prefdata/sharedpref.dart';
 import 'package:kljcafe_customers/utils/notification_service.dart';
@@ -23,7 +24,7 @@ Future<void> main() async {
         BlocProvider(create: (_) => AuthBloc()),
         BlocProvider(create: (_) => WalletBloc()),
         BlocProvider(create: (_) => CafemenuBloc()),
-
+        BlocProvider(create: (_) => SliderBloc()),
 
       ],
       child: const MyApp(),
