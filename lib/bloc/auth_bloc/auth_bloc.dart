@@ -1,8 +1,10 @@
 import 'dart:collection';
 
 import 'package:bloc/bloc.dart';
+import 'package:kljcafe_customers/domain/qr_entity.dart';
 import 'package:kljcafe_customers/domain/register_token_entity.dart';
 import 'package:kljcafe_customers/domain/user_entity.dart';
+import 'package:kljcafe_customers/domain/user_profile_entity.dart';
 import 'package:meta/meta.dart';
 
 import '../../domain/user_token_entity.dart';
@@ -125,6 +127,97 @@ mp['mobile']=event.phone;
         }
       } catch (e) {
         emit(OTPVerificationFailure("Something went wrong: $e"));
+      }
+    });
+
+    on<FetchUserProfileEvent>((event, emit) async {
+      emit(ProfileLoading());
+
+      try {
+
+
+
+
+        final data = await WebCallRepository.get(APICredentials.getUserProfile);
+        UserProfileEntity userTokenEntity=UserProfileEntity.fromJson(data);
+
+        if (userTokenEntity.status == 1) {
+
+
+
+
+          emit(ProfileSuccess(userTokenEntity));
+
+          emit(ProfileLoading());
+          Map mp=new HashMap();
+          mp['id']=userTokenEntity.data!.id.toString();
+          mp['name']=userTokenEntity.data!.name.toString();
+          mp['mobile']=userTokenEntity.data!.mobile.toString();
+
+          final data = await WebCallRepository.post(mp,APICredentials.generateQRToken);
+
+QrEntity qrEntity=QrEntity.fromJson(data);
+
+if(qrEntity.status==1)
+  {
+
+    emit(QRcodeSuccess(qrEntity));
+  }
+
+
+
+        } else {
+          emit(ProfileFailure(data["message"] ?? "Invalid login"));
+        }
+      } catch (e) {
+        emit(ProfileFailure("Something went wrong: $e"));
+      }
+    });
+
+    on<UpdateNameEvent>((event, emit) async {
+      emit(ProfileLoading());
+
+      try {
+
+
+        Map mp=new HashMap();
+
+        mp['name']=event.name;
+
+
+        final data1 = await WebCallRepository.post(mp,APICredentials.updateProfile);
+
+        if(data1['status']==1) {
+          final data = await WebCallRepository.get(
+              APICredentials.getUserProfile);
+          UserProfileEntity userTokenEntity = UserProfileEntity.fromJson(data);
+
+          if (userTokenEntity.status == 1) {
+            emit(ProfileSuccess(userTokenEntity));
+
+            emit(ProfileLoading());
+            Map mp = new HashMap();
+            mp['id'] = userTokenEntity.data!.id.toString();
+            mp['name'] = userTokenEntity.data!.name.toString();
+            mp['mobile'] = userTokenEntity.data!.mobile.toString();
+
+            final data = await WebCallRepository.post(
+                mp, APICredentials.generateQRToken);
+
+            QrEntity qrEntity = QrEntity.fromJson(data);
+
+            if (qrEntity.status == 1) {
+              emit(QRcodeSuccess(qrEntity));
+            }
+          } else {
+            emit(ProfileFailure(data["message"] ?? "failure"));
+          }
+        }
+        else{
+          emit(ProfileFailure(data1["message"] ?? "failure"));
+        }
+      } catch (e) {
+        emit(ProfileFailure("Something went wrong: $e"));
       }
     });
   }

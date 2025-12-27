@@ -72,3 +72,28 @@ class OTPVerificationFailure extends AuthState {
   final String error;
   OTPVerificationFailure(this.error);
 }
+
+
+
+
+class ProfileLoading extends AuthState {
+
+  ProfileLoading();
+
+}
+
+class ProfileSuccess extends AuthState {
+  UserProfileEntity user;
+  ProfileSuccess(this.user);
+}
+
+class ProfileFailure extends AuthState {
+  final String error;
+  ProfileFailure(this.error);
+}
+
+
+class QRcodeSuccess extends AuthState {
+  QrEntity user;
+  QRcodeSuccess(this.user);
+}

@@ -42,13 +42,13 @@ class _CafeHomePageState extends State<CafeHomePage> {
         AndroidFlutterLocalNotificationsPlugin>()
         ?.requestNotificationsPermission();
 
-
-    BlocProvider.of<WalletBloc>(context).add(
-      checkWalletBalanceEvent(
-
-
-      ),
-    );
+    //
+    // BlocProvider.of<WalletBloc>(context).add(
+    //   checkWalletBalanceEvent(
+    //
+    //
+    //   ),
+    // );
 
     BlocProvider.of<SliderBloc>(context).add(
       FetchSliders(
@@ -112,6 +112,20 @@ class _CafeHomePageState extends State<CafeHomePage> {
 
             BlocConsumer<SliderBloc, SliderState>(
               listener: (context, state) async {
+                if(state is WalletSuccess)
+                  {
+                    WalletBalanceEntity wb=state.walletBalanceEntity;
+                    setState(() {
+
+                      if(wb.status==1)
+                      {
+
+                        walletbalance=wb.data!.balance.toString();
+                      }
+
+                    });
+                  }
+
                 if (state is SliderSuccess) {
                   AppUtils.hideLoader(context);
 
@@ -369,51 +383,13 @@ class _CafeHomePageState extends State<CafeHomePage> {
             const SizedBox(height: 5),
             (title.compareTo("Wallet")==0)?
 
-            BlocConsumer<WalletBloc, WalletState>(
-              listener: (context, state) async {
-
-
-                if(state is WalletBalanceSuccess)
-                  {
-                  //  AppUtils.hideLoader(context);
-
-                    WalletBalanceEntity wb=state.walletBalanceEntity;
-                    setState(() {
-
-                      if(wb.status==1)
-                        {
-
-                          walletbalance=wb.data!.balance.toString();
-                        }
-
-                    });
-
-                  }
-                else if(state is WalletBalanceFailure)
-                  {
-                  //  AppUtils.hideLoader(context);
-
-                  }
-                else if(state is WalletBalanceLoading)
-                  {
-
-                   // AppUtils.showLoader(context);
-                  }
-
-
-
-              },
-              builder: (context, state) {
-                return          Text(
-                  "₹ "+walletbalance,
-                  style: const TextStyle(
-                      fontSize: 17,
-                      color: Colors.green,
-                      fontWeight: FontWeight.bold),
-                );
-              },
+            Text(
+              "₹ "+walletbalance,
+              style: const TextStyle(
+                  fontSize: 17,
+                  color: Colors.green,
+                  fontWeight: FontWeight.bold),
             )
-
 
 
 

@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:kljcafe_customers/domain/sliders_entity.dart';
 import 'package:meta/meta.dart';
 
+import '../../domain/wallet_balance_entity.dart';
 import '../../web/api_credentials.dart';
 import '../../web/webcallRepository.dart';
 
@@ -38,6 +39,19 @@ class SliderBloc extends Bloc<SliderEvent, SliderState> {
 
 
           emit(SliderSuccess(walletBalanceEntity));
+
+          Map mp=HashMap();
+
+
+
+          final data = await WebCallRepository.post(mp,APICredentials.getWalletBalance);
+          WalletBalanceEntity walletBalanceEntity1=WalletBalanceEntity.fromJson(data);
+
+          if (walletBalanceEntity.status == 1) {
+            emit(WalletSuccess(walletBalanceEntity1));
+          }
+
+
         } else {
           emit(SliderFailure(data["message"] ?? "Failed"));
         }

@@ -17,6 +17,11 @@ class SliderSuccess extends SliderState {
   SliderSuccess(this.cafeMenuEntity);
 }
 
+class WalletSuccess extends SliderState {
+  WalletBalanceEntity walletBalanceEntity;
+  WalletSuccess(this.walletBalanceEntity);
+}
+
 class SliderFailure extends SliderState {
   final String error;
   SliderFailure(this.error);

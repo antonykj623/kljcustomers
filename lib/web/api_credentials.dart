@@ -20,6 +20,9 @@ class APICredentials{
   static String getProducts="getProducts.php";
   static String getWalletTransactions="getWalletTransactions.php";
   static String getSliders="getSliders.php";
+  static String getUserProfile="getUserProfile.php";
+  static String generateQRToken="generateQRToken.php";
+  static String updateProfile="updateProfile.php";
 
 
 

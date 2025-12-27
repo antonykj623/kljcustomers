@@ -44,3 +44,21 @@ class OTPVerificationEvent extends AuthEvent {
 
 
 }
+
+class FetchUserProfileEvent extends AuthEvent {
+
+
+
+  FetchUserProfileEvent();
+
+
+}
+
+class UpdateNameEvent extends AuthEvent {
+
+String name;
+
+UpdateNameEvent(this. name);
+
+
+}
