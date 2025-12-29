@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kljcafe_customers/domain/wallet_transaction_entity.dart';
+import 'package:kljcafe_customers/widgets/searchUser.dart';
 
 import '../bloc/wallet_bloc/wallet_bloc.dart';
 import '../domain/wallet_balance_entity.dart';
@@ -26,13 +27,13 @@ class _WalletPageState extends State<WalletPage> {
     // TODO: implement initState
     super.initState();
 
-
-    BlocProvider.of<WalletBloc>(context).add(
-      checkWalletBalanceEvent(
-
-
-      ),
-    );
+    //
+    // BlocProvider.of<WalletBloc>(context).add(
+    //   checkWalletBalanceEvent(
+    //
+    //
+    //   ),
+    // );
 
     BlocProvider.of<WalletBloc>(context).add(
       GetWalletTransactions(
@@ -135,7 +136,7 @@ walletbalance=walletTransactionBalanceData.balance.toString();
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const Text(
-                              'Current balance',
+                              'Wallet balance',
                               style: TextStyle(color: Colors.white70, fontSize: 14),
                             ),
                             const SizedBox(height: 10),
@@ -165,6 +166,11 @@ walletbalance=walletTransactionBalanceData.balance.toString();
                                   child:  ElevatedButton(
                                     onPressed: () {
                                       print('Styled Button Pressed!');
+
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => SearchByMobilePage()),
+                                      );
                                     },
                                     style: ElevatedButton.styleFrom(
 
