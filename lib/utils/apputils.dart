@@ -124,4 +124,12 @@ static String getOTPcode()
 
 
 
+static bool isNumeric(String value) {
+  return RegExp(r'^[0-9]+$').hasMatch(value);
+}
+
+
+
+
+
 }

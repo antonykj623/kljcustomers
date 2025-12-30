@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kljcafe_customers/widgets/home.dart';
 
 class WalletSuccessScreen extends StatefulWidget {
   const WalletSuccessScreen({Key? key}) : super(key: key);
@@ -72,7 +73,11 @@ class _WalletSuccessScreenState extends State<WalletSuccessScreen> {
                   ),
                 ),
                 onPressed: () {
-                  Navigator.pop(context);
+                  Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (context) => CafeHomePage()),
+                        (Route<
+                        dynamic> route) => false, // Remove all previous routes
+                  );
                 },
                 child: const Text(
                   "Done",

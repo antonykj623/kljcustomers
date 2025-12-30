@@ -28,7 +28,7 @@ class WalletBalanceData {
 	String? userId = '';
 	String? credit = '';
 	String? debit = '';
-	String? balance = '';
+	String? balance = '0.0';
 	String? description = '';
 	@JSONField(name: "created_date")
 	String? createdDate = '';

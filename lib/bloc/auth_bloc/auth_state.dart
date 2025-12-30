@@ -97,3 +97,42 @@ class QRcodeSuccess extends AuthState {
   QrEntity user;
   QRcodeSuccess(this.user);
 }
+
+
+
+class UserProfilelistLoading extends AuthState {
+
+  UserProfilelistLoading();
+
+}
+
+class UserProfileSuccess extends AuthState {
+  UserprofileListEntity user;
+  UserProfileSuccess(this.user);
+}
+
+class UserProfileFailure extends AuthState {
+  final String error;
+  UserProfileFailure(this.error);
+}
+
+
+
+
+
+
+class DecryptQRLoading extends AuthState {
+
+  DecryptQRLoading();
+
+}
+
+class DecryptQRSuccess extends AuthState {
+  UserProfileEntity user;
+  DecryptQRSuccess(this.user);
+}
+
+class DecryptQRFailure extends AuthState {
+  final String error;
+  DecryptQRFailure(this.error);
+}

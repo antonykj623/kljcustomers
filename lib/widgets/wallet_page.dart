@@ -167,7 +167,7 @@ walletbalance=walletTransactionBalanceData.balance.toString();
                                     onPressed: () {
                                       print('Styled Button Pressed!');
 
-                                      Navigator.push(
+                                      Navigator.pushReplacement(
                                         context,
                                         MaterialPageRoute(builder: (context) => SearchByMobilePage()),
                                       );

@@ -72,5 +72,38 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
         emit(WalletTransactionFailure("Something went wrong: $e"));
       }
     });
+
+
+    on<sendWalletMoneyEvent>((event, emit) async {
+      // TODO: implement event handler
+
+      emit(sendMoneyLoading());
+
+      try {
+
+        Map mp=HashMap();
+        mp["id"]=event.id;
+        mp["amount"]=event.amount;
+
+
+
+        final data = await WebCallRepository.post(mp,APICredentials.sendMoneyToWallet);
+
+
+        if (data['status']== 1) {
+
+
+
+
+
+
+          emit(sendMoneySuccess(data['message']));
+        } else {
+          emit(SendMoneyFailure(data["message"] ?? "Failed"));
+        }
+      } catch (e) {
+        emit(SendMoneyFailure("Something went wrong: $e"));
+      }
+    });
   }
 }

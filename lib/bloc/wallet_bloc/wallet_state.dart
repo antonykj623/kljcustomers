@@ -39,3 +39,28 @@ class WalletTransactionFailure extends WalletState {
   final String error;
   WalletTransactionFailure(this.error);
 }
+
+
+
+
+
+
+
+
+class sendMoneySuccess extends WalletState {
+  String msg;
+  sendMoneySuccess(this.msg);
+}
+
+class SendMoneyFailure extends WalletState {
+  final String error;
+  SendMoneyFailure(this.error);
+}
+
+
+
+class sendMoneyLoading extends WalletState {
+
+  sendMoneyLoading();
+
+}

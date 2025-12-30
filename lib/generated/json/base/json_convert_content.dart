@@ -11,6 +11,7 @@ import 'package:kljcafe_customers/domain/sliders_entity.dart';
 import 'package:kljcafe_customers/domain/user_entity.dart';
 import 'package:kljcafe_customers/domain/user_profile_entity.dart';
 import 'package:kljcafe_customers/domain/user_token_entity.dart';
+import 'package:kljcafe_customers/domain/userprofile_list_entity.dart';
 import 'package:kljcafe_customers/domain/wallet_balance_entity.dart';
 import 'package:kljcafe_customers/domain/wallet_transaction_entity.dart';
 
@@ -194,6 +195,14 @@ class JsonConvert {
       return data.map<UserTokenData>((Map<String, dynamic> e) =>
           UserTokenData.fromJson(e)).toList() as M;
     }
+    if (<UserprofileListEntity>[] is M) {
+      return data.map<UserprofileListEntity>((Map<String, dynamic> e) =>
+          UserprofileListEntity.fromJson(e)).toList() as M;
+    }
+    if (<UserprofileListData>[] is M) {
+      return data.map<UserprofileListData>((Map<String, dynamic> e) =>
+          UserprofileListData.fromJson(e)).toList() as M;
+    }
     if (<WalletBalanceEntity>[] is M) {
       return data.map<WalletBalanceEntity>((Map<String, dynamic> e) =>
           WalletBalanceEntity.fromJson(e)).toList() as M;
@@ -247,6 +256,8 @@ class JsonConvertClassCollection {
     (UserProfileData).toString(): UserProfileData.fromJson,
     (UserTokenEntity).toString(): UserTokenEntity.fromJson,
     (UserTokenData).toString(): UserTokenData.fromJson,
+    (UserprofileListEntity).toString(): UserprofileListEntity.fromJson,
+    (UserprofileListData).toString(): UserprofileListData.fromJson,
     (WalletBalanceEntity).toString(): WalletBalanceEntity.fromJson,
     (WalletBalanceData).toString(): WalletBalanceData.fromJson,
     (WalletTransactionEntity).toString(): WalletTransactionEntity.fromJson,

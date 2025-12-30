@@ -5,9 +5,11 @@ import 'package:kljcafe_customers/domain/qr_entity.dart';
 import 'package:kljcafe_customers/domain/register_token_entity.dart';
 import 'package:kljcafe_customers/domain/user_entity.dart';
 import 'package:kljcafe_customers/domain/user_profile_entity.dart';
+import 'package:kljcafe_customers/utils/apputils.dart';
 import 'package:meta/meta.dart';
 
 import '../../domain/user_token_entity.dart';
+import '../../domain/userprofile_list_entity.dart';
 import '../../prefdata/sharedpref.dart';
 import '../../web/api_credentials.dart';
 import '../../web/webcallRepository.dart';
@@ -218,6 +220,78 @@ if(qrEntity.status==1)
         }
       } catch (e) {
         emit(ProfileFailure("Something went wrong: $e"));
+      }
+    });
+
+    on<SearchUserEvent>((event, emit) async {
+      emit(UserProfilelistLoading());
+
+      try {
+
+
+        Map mp=new HashMap();
+
+        mp['search_param']=event.txt;
+        mp['isnumber']=AppUtils.isNumeric(event.txt).toString();
+
+
+
+
+        final data1 = await WebCallRepository.post(mp,APICredentials.searchUser);
+
+        if(data1['status']==1) {
+
+          UserprofileListEntity userTokenEntity = UserprofileListEntity.fromJson(data1);
+
+          if (userTokenEntity.status == 1) {
+            emit(UserProfileSuccess(userTokenEntity));
+          }
+          else{
+
+            emit(UserProfileFailure(data1["message"] ?? "failure"));
+          }
+        }
+        else{
+          emit(UserProfileFailure(data1["message"] ?? "failure"));
+        }
+      } catch (e) {
+        emit(UserProfileFailure("Something went wrong: $e"));
+      }
+    });
+
+    on<DecryptQrEvent>((event, emit) async {
+      emit(DecryptQRLoading());
+
+      try {
+
+
+        Map mp=new HashMap();
+
+        mp['qrtoken']=event.txt;
+
+
+
+
+
+        final data1 = await WebCallRepository.post(mp,APICredentials.decryptQRToken);
+
+        if(data1['status']==1) {
+
+          UserProfileEntity userTokenEntity = UserProfileEntity.fromJson(data1);
+
+          if (userTokenEntity.status == 1) {
+            emit(DecryptQRSuccess(userTokenEntity));
+          }
+          else{
+
+            emit(DecryptQRFailure(data1["message"] ?? "failure"));
+          }
+        }
+        else{
+          emit(DecryptQRFailure(data1["message"] ?? "failure"));
+        }
+      } catch (e) {
+        emit(DecryptQRFailure("Something went wrong: $e"));
       }
     });
   }

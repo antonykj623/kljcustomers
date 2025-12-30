@@ -42,20 +42,31 @@ class _CafeHomePageState extends State<CafeHomePage> {
         AndroidFlutterLocalNotificationsPlugin>()
         ?.requestNotificationsPermission();
 
-    //
-    // BlocProvider.of<WalletBloc>(context).add(
-    //   checkWalletBalanceEvent(
-    //
-    //
-    //   ),
-    // );
-
     BlocProvider.of<SliderBloc>(context).add(
       FetchSliders(
 
 
       ),
     );
+
+    _handleRefresh();
+
+
+  }
+
+  Future<void> _handleRefresh() async {
+    await Future.delayed(Duration(seconds: 8),() {
+
+      BlocProvider.of<SliderBloc>(context).add(
+        FetchSliders(
+
+
+        ),
+      );
+
+    },); // simulate network fetch
+
+
   }
 
 
@@ -114,6 +125,7 @@ class _CafeHomePageState extends State<CafeHomePage> {
               listener: (context, state) async {
                 if(state is WalletSuccess)
                   {
+              //      AppUtils.hideLoader(context);
                     WalletBalanceEntity wb=state.walletBalanceEntity;
                     setState(() {
 
@@ -127,7 +139,7 @@ class _CafeHomePageState extends State<CafeHomePage> {
                   }
 
                 if (state is SliderSuccess) {
-                  AppUtils.hideLoader(context);
+                 // AppUtils.hideLoader(context);
 
 
                   SlidersEntity loginresponse=state.cafeMenuEntity;
@@ -154,7 +166,7 @@ class _CafeHomePageState extends State<CafeHomePage> {
                 else if(state is SliderLoading)
                 {
 
-                  AppUtils.showLoader(context);
+                 // AppUtils.showLoader(context);
                 }
 
 
@@ -162,7 +174,7 @@ class _CafeHomePageState extends State<CafeHomePage> {
 
                 else if (state is SliderFailure) {
 
-                  AppUtils.hideLoader(context);
+                //  AppUtils.hideLoader(context);
 
 
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -198,10 +210,21 @@ class _CafeHomePageState extends State<CafeHomePage> {
                             padding: const EdgeInsets.all(12.0),
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(20),
-                              child: Image.network(
+                              child:
+
+
+
+                              Image.network(
                                APICredentials.sliderimageurl+ sliderdata[index].image.toString(),
                                 fit: BoxFit.cover,
                                 width: double.infinity,
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) return child; // Image loaded successfully
+                              return Center(child: CircularProgressIndicator()); // Show loader while loading
+                            },
+                            errorBuilder: (context, error, stackTrace) {
+                              return Icon(Icons.image,size: 50,color: Colors.black26,); // Show a local placeholder on error
+                            },
                               ),
                             ),
                           );

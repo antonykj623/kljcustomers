@@ -23,6 +23,9 @@ class APICredentials{
   static String getUserProfile="getUserProfile.php";
   static String generateQRToken="generateQRToken.php";
   static String updateProfile="updateProfile.php";
+  static String searchUser="searchUser.php";
+  static String sendMoneyToWallet="sendMoneyToWallet.php";
+  static String decryptQRToken="decryptQRToken.php";
 
 
 

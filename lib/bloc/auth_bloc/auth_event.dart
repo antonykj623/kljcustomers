@@ -62,3 +62,22 @@ UpdateNameEvent(this. name);
 
 
 }
+
+class SearchUserEvent extends AuthEvent {
+
+  String txt;
+
+  SearchUserEvent(this. txt);
+
+
+}
+
+
+class DecryptQrEvent extends AuthEvent {
+
+  String txt;
+
+  DecryptQrEvent(this. txt);
+
+
+}
