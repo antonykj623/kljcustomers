@@ -12,6 +12,8 @@ class checkWalletBalanceEvent extends WalletEvent {
 
 class GetWalletTransactions extends WalletEvent {
 
+
+
   GetWalletTransactions();
 }
 

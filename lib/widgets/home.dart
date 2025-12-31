@@ -14,6 +14,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'foodmenu.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'notifications.dart';
+
 class CafeHomePage extends StatefulWidget {
   const CafeHomePage({Key? key}) : super(key: key);
 
@@ -93,7 +95,22 @@ class _CafeHomePageState extends State<CafeHomePage> {
 
           const Icon(Icons.language, color: Colors.black),
           const SizedBox(width: 12),
-          const Icon(Icons.notifications_none, color: Colors.black),
+
+
+          GestureDetector(
+              onTap: (){
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>  NotificationScreen(),
+                  ),
+                );
+
+
+              },
+
+              child:  Icon(Icons.notifications_none, color: Colors.black)),
           const SizedBox(width: 12),
 
 
