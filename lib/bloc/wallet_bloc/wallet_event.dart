@@ -27,3 +27,9 @@ class sendWalletMoneyEvent extends WalletEvent {
   sendWalletMoneyEvent(this.id,this.amount);
 
 }
+
+
+class GetCommisionPercent extends WalletEvent{
+
+  GetCommisionPercent();
+}

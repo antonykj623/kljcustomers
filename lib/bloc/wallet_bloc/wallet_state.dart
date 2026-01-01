@@ -64,3 +64,22 @@ class sendMoneyLoading extends WalletState {
   sendMoneyLoading();
 
 }
+
+
+class WalletCommissionSuccess extends WalletState {
+  WalletPercentEntity msg;
+  WalletCommissionSuccess(this.msg);
+}
+
+class WalletCommissionFailure extends WalletState {
+  final String error;
+  WalletCommissionFailure(this.error);
+}
+
+
+
+class WalletCommisionLoading extends WalletState {
+
+  WalletCommisionLoading();
+
+}

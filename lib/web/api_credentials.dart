@@ -26,6 +26,8 @@ class APICredentials{
   static String searchUser="searchUser.php";
   static String sendMoneyToWallet="sendMoneyToWallet.php";
   static String decryptQRToken="decryptQRToken.php";
+  static String getWalletPercent="getWalletPercent.php";
+  static String getReferalLink="getReferalLink.php";
 
 
 

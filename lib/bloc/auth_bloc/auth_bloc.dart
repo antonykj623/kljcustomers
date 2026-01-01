@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:bloc/bloc.dart';
 import 'package:kljcafe_customers/domain/qr_entity.dart';
+import 'package:kljcafe_customers/domain/referal_link_entity.dart';
 import 'package:kljcafe_customers/domain/register_token_entity.dart';
 import 'package:kljcafe_customers/domain/user_entity.dart';
 import 'package:kljcafe_customers/domain/user_profile_entity.dart';
@@ -157,6 +158,16 @@ mp['mobile']=event.phone;
           mp['mobile']=userTokenEntity.data!.mobile.toString();
 
           final data = await WebCallRepository.post(mp,APICredentials.generateQRToken);
+
+          final data1 = await WebCallRepository.post(mp,APICredentials.getReferalLink);
+
+          ReferalLinkEntity referalLinkEntity=ReferalLinkEntity.fromJson(data1);
+
+          if(referalLinkEntity.status==1)
+            {
+              emit(ReferallinkSuccess(referalLinkEntity));
+            }
+
 
 QrEntity qrEntity=QrEntity.fromJson(data);
 

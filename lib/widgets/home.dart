@@ -315,7 +315,7 @@ class _CafeHomePageState extends State<CafeHomePage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>  ReferalPage(),
+                    builder: (context) =>  ReferEarnPage(),
                   ),
                 );
 

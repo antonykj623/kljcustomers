@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:bloc/bloc.dart';
 import 'package:kljcafe_customers/domain/wallet_balance_entity.dart';
+import 'package:kljcafe_customers/domain/wallet_percent_entity.dart';
 import 'package:kljcafe_customers/domain/wallet_transaction_entity.dart';
 import 'package:meta/meta.dart';
 
@@ -105,6 +106,38 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
         }
       } catch (e) {
         emit(SendMoneyFailure("Something went wrong: $e"));
+      }
+    });
+
+
+    on<GetCommisionPercent>((event, emit) async {
+      // TODO: implement event handler
+
+      emit(WalletCommisionLoading());
+
+      try {
+
+        Map mp=HashMap();
+
+
+
+
+        final data = await WebCallRepository.get(APICredentials.getWalletPercent);
+        WalletPercentEntity walletPercentEntity=WalletPercentEntity.fromJson(data);
+
+        if (walletPercentEntity.status== 1) {
+
+
+
+
+
+
+          emit(WalletCommissionSuccess(walletPercentEntity));
+        } else {
+          emit(WalletCommissionFailure(data["message"] ?? "Failed"));
+        }
+      } catch (e) {
+        emit(WalletCommissionFailure("Something went wrong: $e"));
       }
     });
   }

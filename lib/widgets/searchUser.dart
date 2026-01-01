@@ -121,7 +121,7 @@ class _SearchByMobilePageState extends State<SearchByMobilePage> {
                         child: Icon(Icons.person),
                       ),
                       title: Text(item.name.toString()),
-                      subtitle: Text(item.mobile.toString()),
+                      subtitle: Text(maskMobileNumber(  item.mobile.toString())),
                       onTap: () {
                         Navigator.pushReplacement(
                           context,
@@ -150,4 +150,12 @@ class _SearchByMobilePageState extends State<SearchByMobilePage> {
 
     );
   }
+
+  String maskMobileNumber(String mobile) {
+    return mobile.replaceAllMapped(
+      RegExp(r'(\d{3})\d{4}(\d{3})'),
+          (match) => '${match.group(1)}****${match.group(2)}',
+    );
+  }
+
 }

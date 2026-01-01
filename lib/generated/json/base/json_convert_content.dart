@@ -6,6 +6,7 @@
 import 'package:flutter/material.dart' show debugPrint;
 import 'package:kljcafe_customers/domain/cafe_menu_entity.dart';
 import 'package:kljcafe_customers/domain/qr_entity.dart';
+import 'package:kljcafe_customers/domain/referal_link_entity.dart';
 import 'package:kljcafe_customers/domain/register_token_entity.dart';
 import 'package:kljcafe_customers/domain/sliders_entity.dart';
 import 'package:kljcafe_customers/domain/user_entity.dart';
@@ -13,6 +14,7 @@ import 'package:kljcafe_customers/domain/user_profile_entity.dart';
 import 'package:kljcafe_customers/domain/user_token_entity.dart';
 import 'package:kljcafe_customers/domain/userprofile_list_entity.dart';
 import 'package:kljcafe_customers/domain/wallet_balance_entity.dart';
+import 'package:kljcafe_customers/domain/wallet_percent_entity.dart';
 import 'package:kljcafe_customers/domain/wallet_transaction_entity.dart';
 
 JsonConvert jsonConvert = JsonConvert();
@@ -159,6 +161,10 @@ class JsonConvert {
       return data.map<QrEntity>((Map<String, dynamic> e) =>
           QrEntity.fromJson(e)).toList() as M;
     }
+    if (<ReferalLinkEntity>[] is M) {
+      return data.map<ReferalLinkEntity>((Map<String, dynamic> e) =>
+          ReferalLinkEntity.fromJson(e)).toList() as M;
+    }
     if (<RegisterTokenEntity>[] is M) {
       return data.map<RegisterTokenEntity>((Map<String, dynamic> e) =>
           RegisterTokenEntity.fromJson(e)).toList() as M;
@@ -211,6 +217,14 @@ class JsonConvert {
       return data.map<WalletBalanceData>((Map<String, dynamic> e) =>
           WalletBalanceData.fromJson(e)).toList() as M;
     }
+    if (<WalletPercentEntity>[] is M) {
+      return data.map<WalletPercentEntity>((Map<String, dynamic> e) =>
+          WalletPercentEntity.fromJson(e)).toList() as M;
+    }
+    if (<WalletPercentData>[] is M) {
+      return data.map<WalletPercentData>((Map<String, dynamic> e) =>
+          WalletPercentData.fromJson(e)).toList() as M;
+    }
     if (<WalletTransactionEntity>[] is M) {
       return data.map<WalletTransactionEntity>((Map<String, dynamic> e) =>
           WalletTransactionEntity.fromJson(e)).toList() as M;
@@ -247,6 +261,7 @@ class JsonConvertClassCollection {
     (CafeMenuEntity).toString(): CafeMenuEntity.fromJson,
     (CafeMenuData).toString(): CafeMenuData.fromJson,
     (QrEntity).toString(): QrEntity.fromJson,
+    (ReferalLinkEntity).toString(): ReferalLinkEntity.fromJson,
     (RegisterTokenEntity).toString(): RegisterTokenEntity.fromJson,
     (SlidersEntity).toString(): SlidersEntity.fromJson,
     (SlidersData).toString(): SlidersData.fromJson,
@@ -260,6 +275,8 @@ class JsonConvertClassCollection {
     (UserprofileListData).toString(): UserprofileListData.fromJson,
     (WalletBalanceEntity).toString(): WalletBalanceEntity.fromJson,
     (WalletBalanceData).toString(): WalletBalanceData.fromJson,
+    (WalletPercentEntity).toString(): WalletPercentEntity.fromJson,
+    (WalletPercentData).toString(): WalletPercentData.fromJson,
     (WalletTransactionEntity).toString(): WalletTransactionEntity.fromJson,
     (WalletTransactionData).toString(): WalletTransactionData.fromJson,
     (WalletTransactionBalanceData).toString(): WalletTransactionBalanceData

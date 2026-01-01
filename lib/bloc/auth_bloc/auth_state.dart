@@ -136,3 +136,9 @@ class DecryptQRFailure extends AuthState {
   final String error;
   DecryptQRFailure(this.error);
 }
+
+
+class ReferallinkSuccess extends AuthState {
+  ReferalLinkEntity user;
+  ReferallinkSuccess(this.user);
+}
