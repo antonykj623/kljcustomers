@@ -142,3 +142,24 @@ class ReferallinkSuccess extends AuthState {
   ReferalLinkEntity user;
   ReferallinkSuccess(this.user);
 }
+
+
+
+
+
+
+class DeleteAccountLoading extends AuthState {
+
+  DeleteAccountLoading();
+
+}
+
+class DeleteAccountSuccess extends AuthState {
+  String user;
+  DeleteAccountSuccess(this.user);
+}
+
+class DeleteAccountFailure extends AuthState {
+  final String error;
+  DeleteAccountFailure(this.error);
+}

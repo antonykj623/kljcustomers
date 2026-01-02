@@ -305,5 +305,37 @@ if(qrEntity.status==1)
         emit(DecryptQRFailure("Something went wrong: $e"));
       }
     });
+
+
+    on<DeleteAccountEvent>((event, emit) async {
+      emit(DeleteAccountLoading());
+
+      try {
+
+
+        Map mp=new HashMap();
+
+       // mp['mobile']=event.mobile;
+
+
+
+
+
+        final data1 = await WebCallRepository.get(APICredentials.deleteAccountStaff+"?mobile="+event.mobile+"&id="+event.id);
+
+        if(data1['status']==1) {
+
+
+
+            emit(DeleteAccountSuccess("success"));
+
+        }
+        else{
+          emit(DeleteAccountFailure(data1["message"] ?? "failure"));
+        }
+      } catch (e) {
+        emit(DeleteAccountFailure("Something went wrong: $e"));
+      }
+    });
   }
 }

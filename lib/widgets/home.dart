@@ -57,7 +57,7 @@ class _CafeHomePageState extends State<CafeHomePage> {
   }
 
   Future<void> _handleRefresh() async {
-    await Future.delayed(Duration(seconds: 8),() {
+    await Future.delayed(Duration(seconds: 5),() {
 
       BlocProvider.of<SliderBloc>(context).add(
         FetchSliders(

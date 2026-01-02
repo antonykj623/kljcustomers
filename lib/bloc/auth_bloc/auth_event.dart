@@ -81,3 +81,15 @@ class DecryptQrEvent extends AuthEvent {
 
 
 }
+
+
+
+class DeleteAccountEvent extends AuthEvent {
+
+  String mobile;
+  String id;
+
+  DeleteAccountEvent(this. mobile,this.id);
+
+
+}
