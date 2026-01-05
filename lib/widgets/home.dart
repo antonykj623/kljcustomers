@@ -93,7 +93,7 @@ class _CafeHomePageState extends State<CafeHomePage> {
           //lchange.png
 
 
-          const Icon(Icons.language, color: Colors.black),
+         // const Icon(Icons.language, color: Colors.black),
           const SizedBox(width: 12),
 
 

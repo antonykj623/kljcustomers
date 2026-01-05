@@ -29,6 +29,7 @@ class APICredentials{
   static String getWalletPercent="getWalletPercent.php";
   static String getReferalLink="getReferalLink.php";
   static String deleteAccountStaff="deleteAccountStaff.php";
+  static String getNotifications="getNotifications.php";
 
 
 

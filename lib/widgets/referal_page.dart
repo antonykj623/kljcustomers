@@ -93,7 +93,11 @@ class _ReferEarnPageState extends State<ReferEarnPage> {
 
                   Expanded(child:       Padding(
                     padding: const EdgeInsets.all(16),
-                    child: Column(
+                    child:
+
+
+
+                    Column(
                       children: [
                         /// -------- SINGLE USE WALLET --------
                         _sectionTitle("Single User Wallet Commission"),
@@ -153,7 +157,7 @@ class _ReferEarnPageState extends State<ReferEarnPage> {
                       ],
                     ),
                   ),
-                    flex: 4,),
+                    flex: 5,),
 
                   Expanded(child:  BlocConsumer<AuthBloc, AuthState>(
           listener: (context, state) async {
@@ -323,7 +327,7 @@ class _ReferEarnPageState extends State<ReferEarnPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Image.asset(icon,width: 110,height: 100,fit: BoxFit.fill,),
+          Image.asset(icon,width: 50,height: 45,fit: BoxFit.fill,),
           const SizedBox(height: 12),
           Text(
             percentage,
