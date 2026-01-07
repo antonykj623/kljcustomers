@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/auth_bloc/auth_bloc.dart';
 import '../bloc/wallet_bloc/wallet_bloc.dart';
 import '../utils/apputils.dart';
+import '../utils/native_notification.dart';
 class SendMoneyPage extends StatefulWidget {
   final String id;
   final String name;
@@ -94,6 +95,8 @@ class _SendMoneyPageState extends State<SendMoneyPage> {
           {
 
             AppUtils.hideLoader(context);
+
+
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(

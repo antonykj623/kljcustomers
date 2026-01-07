@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:kljcafe_customers/widgets/home.dart';
 
+import '../utils/native_notification.dart';
+
 class WalletSuccessScreen extends StatefulWidget {
   const WalletSuccessScreen({Key? key}) : super(key: key);
 
@@ -9,6 +11,16 @@ class WalletSuccessScreen extends StatefulWidget {
 }
 
 class _WalletSuccessScreenState extends State<WalletSuccessScreen> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    NativeNotification.show(
+      title: "KLJ Cafe ☕",
+      message: "Wallet money sent successfully",
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -14,9 +14,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'bloc/cafemenu/cafemenu_bloc.dart';
 
 
-Future<void> main() async {
+ main()  {
   WidgetsFlutterBinding.ensureInitialized();
-  await NotificationService.init();
+  //NotificationService.init();
   runApp(
     MultiBlocProvider(
       providers: [
@@ -121,7 +121,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   checkPage()
   async {
-
 
 
     String? token= await SharedPref.getString(APICredentials.apptoken);
