@@ -13,4 +13,9 @@ class NativeNotification {
       'message': message,
     });
   }
+
+
+  static Future<void> checkNotificationpermission() async {
+    await _channel.invokeMethod('showNotification1');
+  }
 }

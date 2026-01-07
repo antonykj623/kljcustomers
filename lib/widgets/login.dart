@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kljcafe_customers/bloc/auth_bloc/auth_bloc.dart';
 import 'package:kljcafe_customers/domain/register_token_entity.dart';
 import 'package:kljcafe_customers/domain/user_entity.dart';
 import 'package:kljcafe_customers/utils/apputils.dart';
+import 'package:kljcafe_customers/utils/native_notification.dart';
 
 import '../prefdata/sharedpref.dart';
 import '../web/api_credentials.dart';
@@ -27,14 +28,7 @@ class _MobileLoginPageState extends State<MobileLoginPage> {
   void initState() {
     super.initState();
 
-    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
-
-    flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin>()
-        ?.requestNotificationsPermission();
-
+NativeNotification.checkNotificationpermission();
 setRememberedPhone();
   }
 
@@ -210,7 +204,7 @@ setRememberedPhone();
                         SharedPref.setString(APICredentials.savedmobile,_mobileController.text.toString());
 
 
-                        Navigator.push(
+                        Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
                             builder: (context) =>  CafeHomePage(),

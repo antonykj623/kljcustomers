@@ -4,7 +4,7 @@ import 'package:kljcafe_customers/bloc/notification_bloc/notification_bloc.dart'
 import 'package:kljcafe_customers/bloc/slider_bloc/slider_bloc.dart';
 import 'package:kljcafe_customers/bloc/wallet_bloc/wallet_bloc.dart';
 import 'package:kljcafe_customers/prefdata/sharedpref.dart';
-import 'package:kljcafe_customers/utils/notification_service.dart';
+
 import 'package:kljcafe_customers/web/api_credentials.dart';
 import 'package:kljcafe_customers/widgets/home.dart';
 

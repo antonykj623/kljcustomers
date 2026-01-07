@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:kljcafe_customers/domain/register_token_entity.dart';
 import 'package:kljcafe_customers/utils/apputils.dart';
+import 'package:kljcafe_customers/utils/native_notification.dart';
 import 'package:pinput/pinput.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kljcafe_customers/bloc/auth_bloc/auth_bloc.dart';
 import '../prefdata/sharedpref.dart';
-import '../utils/notification_service.dart';
+
 import '../web/api_credentials.dart';
 import 'home.dart';
 
@@ -39,10 +40,6 @@ class _OtpPageState extends State<OtpPage> {
     super.initState();
 
     otpcode=AppUtils.getOTPcode();
-    NotificationService.showSimpleNotification(
-      title: 'Hello 👋',
-      body: 'Your OTP code is '+otpcode,
-    );
   }
 
   @override
@@ -211,10 +208,9 @@ OTPVerificationEvent(token)  );
                         const SnackBar(content: Text("OTP resent!")),
                       );
                       otpcode=AppUtils.getOTPcode();
-                      NotificationService.showSimpleNotification(
-                        title: 'Hello 👋',
-                        body: 'Your OTP code is '+otpcode,
-                      );
+
+
+                      NativeNotification.show(title: "KLJ Cafe", message: "Your otp is "+otpcode);
                     },
                     child: const Text(
                       "Resend",

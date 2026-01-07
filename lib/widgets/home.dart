@@ -11,15 +11,14 @@ import 'package:kljcafe_customers/widgets/qrcodescanner.dart';
 import 'package:kljcafe_customers/widgets/referal_page.dart';
 import 'package:kljcafe_customers/widgets/sendmoney.dart';
 import 'package:kljcafe_customers/widgets/wallet_page.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
 import '../bloc/auth_bloc/auth_bloc.dart';
 import '../domain/user_profile_entity.dart';
 import '../utils/native_notification.dart';
 import '../utils/nativescanner.dart';
-import '../utils/notification_service.dart';
 import 'foodmenu.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:permission_handler/permission_handler.dart';
+
 import 'notifications.dart';
 
 
@@ -45,13 +44,10 @@ class _CafeHomePageState extends State<CafeHomePage> {
     // TODO: implement initState
     super.initState();
 
-    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
-
-    flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin>()
-        ?.requestNotificationsPermission();
+    NativeNotification.show(
+      title: "KLJ Cafe ☕",
+      message: "Wallet money sent successfully",
+    );
 
     BlocProvider.of<SliderBloc>(context).add(
       FetchSliders(
@@ -61,23 +57,12 @@ class _CafeHomePageState extends State<CafeHomePage> {
     );
 
     _handleRefresh();
-    showNotificationPermission();
-
-
-  }
-
-  showNotificationPermission() async {
-
-
-    bool allowed = await notificationrequest();
-
-    if (allowed) {
-      print("✅ Notification permission granted");
-    } else {
-      print("❌ Notification permission denied");
-    }
+  //  showNotificationPermission();
+NativeNotification.checkNotificationpermission();
 
   }
+
+
 
   Future<void> _handleRefresh() async {
     await Future.delayed(Duration(seconds: 5),() {
@@ -444,16 +429,7 @@ class _CafeHomePageState extends State<CafeHomePage> {
             //   ),
             // );
 
-            bool granted = await requestCameraPermission();
 
-            if (!granted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text("Camera permission is required to scan QR"),
-                ),
-              );
-              return;
-            }
 
             String? qrResult = await NativeQRScanner.openScanner();
             if (qrResult != null) {
@@ -542,36 +518,5 @@ class _CafeHomePageState extends State<CafeHomePage> {
     );
   }
 
-  Future<bool> requestCameraPermission() async {
-    final status = await Permission.camera.status;
 
-    if (status.isGranted) {
-      return true;
-    }
-
-    if (status.isDenied) {
-      final result = await Permission.camera.request();
-      return result.isGranted;
-    }
-
-    if (status.isPermanentlyDenied) {
-      await openAppSettings();
-      return false;
-    }
-
-    return false;
-  }
-
-
-  static Future<bool> notificationrequest() async {
-
-    // Android < 13 → auto granted
-    if (await Permission.notification.isGranted) {
-      return true;
-    }
-
-    final status = await Permission.notification.request();
-
-    return status.isGranted;
-  }
 }
