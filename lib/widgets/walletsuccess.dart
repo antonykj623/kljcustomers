@@ -16,7 +16,12 @@ class _WalletSuccessScreenState extends State<WalletSuccessScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    NativeNotification.show(
+showNotification();
+  }
+
+  showNotification()
+  async {
+   await NativeNotification.show(
       title: "KLJ Cafe ☕",
       message: "Wallet money sent successfully",
     );

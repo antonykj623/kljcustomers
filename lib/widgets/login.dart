@@ -28,7 +28,7 @@ class _MobileLoginPageState extends State<MobileLoginPage> {
   void initState() {
     super.initState();
 
-NativeNotification.checkNotificationpermission();
+NativeNotification.requestPermission();
 setRememberedPhone();
   }
 

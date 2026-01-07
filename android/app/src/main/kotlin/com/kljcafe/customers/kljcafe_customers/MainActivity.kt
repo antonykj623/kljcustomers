@@ -16,106 +16,104 @@ import io.flutter.plugins.GeneratedPluginRegistrant
 
 class MainActivity : FlutterFragmentActivity() {
 
-    // -------- CHANNELS --------
+    // -------- CHANNEL NAMES --------
     private val PREF_CHANNEL = "native_prefs"
     private val QR_CHANNEL = "qr_scanner_channel"
     private val NOTIFICATION_CHANNEL = "native_notifications"
 
-    private val NOTIFICATION_CHANNEL1 = "native_notifications1"
-
+    // -------- REQUEST CODES --------
     private val QR_REQUEST_CODE = 1001
     private val CAMERA_PERMISSION_CODE = 2001
+    private val NOTIFICATION_PERMISSION_CODE = 2002
+
     private var qrResultCallback: MethodChannel.Result? = null
-    private var pendingQRScan: Boolean = false // track if QR scan is waiting
+    private var pendingQRScan = false
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
-        // 🔥 REQUIRED for older plugins + FragmentActivity
         GeneratedPluginRegistrant.registerWith(flutterEngine)
         super.configureFlutterEngine(flutterEngine)
 
         // ---------------- PREF CHANNEL ----------------
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, PREF_CHANNEL)
-            .setMethodCallHandler { call, result ->
-                val prefs: SharedPreferences =
-                    getSharedPreferences("native_storage", Context.MODE_PRIVATE)
+        MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            PREF_CHANNEL
+        ).setMethodCallHandler { call, result ->
 
-                when (call.method) {
-                    "setString" -> {
-                        val key = call.argument<String>("key")
-                        val value = call.argument<String>("value")
-                        prefs.edit().putString(key, value).apply()
-                        result.success(null)
-                    }
-                    "getString" -> {
-                        val key = call.argument<String>("key")
-                        val value = prefs.getString(key, null)
-                        result.success(value)
-                    }
-                    else -> result.notImplemented()
+            val prefs: SharedPreferences =
+                getSharedPreferences("native_storage", Context.MODE_PRIVATE)
+
+            when (call.method) {
+                "setString" -> {
+                    val key = call.argument<String>("key")
+                    val value = call.argument<String>("value")
+                    prefs.edit().putString(key, value).apply()
+                    result.success(null)
                 }
+
+                "getString" -> {
+                    val key = call.argument<String>("key")
+                    result.success(prefs.getString(key, null))
+                }
+
+                else -> result.notImplemented()
             }
+        }
 
         // ---------------- QR SCANNER CHANNEL ----------------
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, QR_CHANNEL)
-            .setMethodCallHandler { call, result ->
-                if (call.method == "openQRScanner") {
-                    qrResultCallback = result
-                    // check camera permission first
-                    if (ContextCompat.checkSelfPermission(
-                            this,
-                            android.Manifest.permission.CAMERA
-                        ) != PackageManager.PERMISSION_GRANTED
-                    ) {
-                        ActivityCompat.requestPermissions(
-                            this,
-                            arrayOf(android.Manifest.permission.CAMERA),
-                            CAMERA_PERMISSION_CODE
-                        )
-                        pendingQRScan = true
-                    } else {
-                        openQRScanner()
-                    }
+        MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            QR_CHANNEL
+        ).setMethodCallHandler { call, result ->
+
+            if (call.method == "openQRScanner") {
+                qrResultCallback = result
+
+                if (ContextCompat.checkSelfPermission(
+                        this,
+                        Manifest.permission.CAMERA
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    pendingQRScan = true
+                    ActivityCompat.requestPermissions(
+                        this,
+                        arrayOf(Manifest.permission.CAMERA),
+                        CAMERA_PERMISSION_CODE
+                    )
                 } else {
-                    result.notImplemented()
+                    openQRScanner()
                 }
+            } else {
+                result.notImplemented()
             }
+        }
 
         // ---------------- NOTIFICATION CHANNEL ----------------
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, NOTIFICATION_CHANNEL)
-            .setMethodCallHandler { call, result ->
-                if (call.method == "showNotification") {
+        MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            NOTIFICATION_CHANNEL
+        ).setMethodCallHandler { call, result ->
+
+            when (call.method) {
+
+                "showNotification" -> {
                     val title = call.argument<String>("title") ?: "Notification"
                     val message = call.argument<String>("message") ?: ""
-                    NotificationHelper.createChannel(this)
-                    NotificationHelper.showNotification(this, title, message)
+
+                    if (checkNotificationPermission()) {
+                        NotificationHelper.createChannel(this)
+                        NotificationHelper.showNotification(this, title, message)
+                    }
+
                     result.success(null)
-                } else {
-                    result.notImplemented()
                 }
-            }
 
-
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, NOTIFICATION_CHANNEL)
-            .setMethodCallHandler { call, result ->
-                if (call.method == "showNotification1") {
-
+                "requestNotificationPermission" -> {
                     checkNotificationPermission()
                     result.success(null)
-                } else {
-                    result.notImplemented()
                 }
-            }
-    }
 
-    private fun checkNotificationPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.POST_NOTIFICATIONS),
-                CAMERA_PERMISSION_CODE
-            )
-        } else {
-            // Permission already granted
+                else -> result.notImplemented()
+            }
         }
     }
 
@@ -125,7 +123,29 @@ class MainActivity : FlutterFragmentActivity() {
         startActivityForResult(intent, QR_REQUEST_CODE)
     }
 
-    // -------- HANDLE CAMERA PERMISSION RESULT --------
+    // -------- NOTIFICATION PERMISSION (ANDROID 13+) --------
+    private fun checkNotificationPermission(): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                    NOTIFICATION_PERMISSION_CODE
+                )
+                false
+            } else {
+                true
+            }
+        } else {
+            true
+        }
+    }
+
+    // -------- PERMISSION RESULT HANDLER --------
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -133,16 +153,23 @@ class MainActivity : FlutterFragmentActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
-        if (requestCode == CAMERA_PERMISSION_CODE) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                if (pendingQRScan) {
-                    openQRScanner()
+        when (requestCode) {
+
+            CAMERA_PERMISSION_CODE -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (pendingQRScan) {
+                        openQRScanner()
+                        pendingQRScan = false
+                    }
+                } else {
+                    qrResultCallback?.error(
+                        "PERMISSION_DENIED",
+                        "Camera permission denied",
+                        null
+                    )
+                    qrResultCallback = null
                     pendingQRScan = false
                 }
-            } else {
-                qrResultCallback?.error("PERMISSION_DENIED", "Camera permission denied", null)
-                qrResultCallback = null
-                pendingQRScan = false
             }
         }
     }
@@ -153,8 +180,7 @@ class MainActivity : FlutterFragmentActivity() {
 
         if (requestCode == QR_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
-                val qrText = data?.getStringExtra("qr_result")
-                qrResultCallback?.success(qrText)
+                qrResultCallback?.success(data?.getStringExtra("qr_result"))
             } else {
                 qrResultCallback?.error("CANCELLED", "QR scan cancelled", null)
             }

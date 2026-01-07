@@ -58,10 +58,15 @@ class _CafeHomePageState extends State<CafeHomePage> {
 
     _handleRefresh();
   //  showNotificationPermission();
-NativeNotification.checkNotificationpermission();
+
+    showNotification();
 
   }
 
+  showNotification()
+  async {
+  await  NativeNotification.show(title: "KLJ Cafe", message: "Hai hello");
+  }
 
 
   Future<void> _handleRefresh() async {
