@@ -1,28 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:kljcafe_customers/bloc/slider_bloc/slider_bloc.dart';
-import 'package:kljcafe_customers/bloc/wallet_bloc/wallet_bloc.dart';
-import 'package:kljcafe_customers/domain/sliders_entity.dart';
-import 'package:kljcafe_customers/domain/wallet_balance_entity.dart';
-import 'package:kljcafe_customers/utils/apputils.dart';
-import 'package:kljcafe_customers/web/api_credentials.dart';
-import 'package:kljcafe_customers/widgets/comingsoon.dart';
-import 'package:kljcafe_customers/widgets/profile.dart';
-import 'package:kljcafe_customers/widgets/qrcodescanner.dart';
-import 'package:kljcafe_customers/widgets/referal_page.dart';
-import 'package:kljcafe_customers/widgets/sendmoney.dart';
-import 'package:kljcafe_customers/widgets/wallet_page.dart';
-
-import '../bloc/auth_bloc/auth_bloc.dart';
-import '../domain/user_profile_entity.dart';
-import '../utils/native_notification.dart';
-import '../utils/nativescanner.dart';
-import 'foodmenu.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../bloc/auth_bloc/auth_bloc.dart';
+import '../bloc/slider_bloc/slider_bloc.dart';
+import '../domain/sliders_entity.dart';
+import '../domain/user_profile_entity.dart';
+import '../utils/apputils.dart';
+import '../utils/native_notification.dart';
+import '../utils/nativescanner.dart';
+import '../web/api_credentials.dart';
+
+import 'foodmenu.dart';
 import 'notifications.dart';
-
-
-
+import 'profile.dart';
+import 'wallet_page.dart';
+import 'sendmoney.dart';
+import 'referal_page.dart';
+import 'comingsoon.dart';
 
 class CafeHomePage extends StatefulWidget {
   const CafeHomePage({Key? key}) : super(key: key);
@@ -33,495 +27,263 @@ class CafeHomePage extends StatefulWidget {
 
 class _CafeHomePageState extends State<CafeHomePage> {
   int currentIndex = 0;
-
-  List<String>adimages=["assets/w1.png","assets/w2.png"];
-
-  String walletbalance="0.00";
-  List<SlidersData> sliderdata = [];
+  String walletBalance = "0.00";
+  List<SlidersData> sliderData = [];
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     NativeNotification.show(
       title: "KLJ Cafe ☕",
-      message: "Wallet money sent successfully",
+      message: "Welcome back!",
     );
 
-    BlocProvider.of<SliderBloc>(context).add(
-      FetchSliders(
-
-
-      ),
-    );
-
-    _handleRefresh();
-  //  showNotificationPermission();
-
-    showNotification();
-
+    BlocProvider.of<SliderBloc>(context).add(FetchSliders());
   }
-
-  showNotification()
-  async {
-  await  NativeNotification.show(title: "KLJ Cafe", message: "Hai hello");
-  }
-
-
-  Future<void> _handleRefresh() async {
-    await Future.delayed(Duration(seconds: 5),() {
-
-      BlocProvider.of<SliderBloc>(context).add(
-        FetchSliders(
-
-
-        ),
-      );
-
-    },); // simulate network fetch
-
-
-  }
-
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey[100],
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        leadingWidth: 0,
-        leading: Container(),
-        elevation: 1,
-        title: Row(
-          children: [
-            Text("KLJ Cafe",style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold),)
-          
-           , const SizedBox(width: 8),
+    final size = MediaQuery.of(context).size;
+    final isTablet = size.width >= 600;
 
+    return Scaffold(
+      backgroundColor: Colors.grey.shade100,
+      appBar: _buildAppBar(isTablet),
+      body: RefreshIndicator(
+        onRefresh: _refreshData,
+        child: ListView(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          children: [
+            _buildSlider(size),
+            const SizedBox(height: 16),
+            _buildIndicator(),
+            const SizedBox(height: 24),
+            _buildGrid(isTablet),
+            const SizedBox(height: 16),
+            _buildReferralButton(size),
           ],
         ),
-        actions: [
-          //lchange.png
+      ),
+    );
+  }
 
+  /* ---------------- APP BAR ---------------- */
 
-         // const Icon(Icons.language, color: Colors.black),
-          const SizedBox(width: 12),
+  AppBar _buildAppBar(bool isTablet) {
+    return AppBar(
+      elevation: 1,
+      backgroundColor: Colors.white,
+      title: Text(
+        "KLJ Cafe",
+        style: TextStyle(
+          fontSize: isTablet ? 28 : 22,
+          fontWeight: FontWeight.bold,
+          color: Colors.black,
+        ),
+      ),
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.notifications_none, color: Colors.black),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => NotificationScreen()),
+            );
+          },
+        ),
+        IconButton(
+          icon: const Icon(Icons.person, color: Colors.black),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => Profile()),
+            );
+          },
+        ),
+      ],
+    );
+  }
 
+  /* ---------------- SLIDER ---------------- */
 
-          GestureDetector(
-              onTap: (){
-
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>  NotificationScreen(),
+  Widget _buildSlider(Size size) {
+    return BlocConsumer<SliderBloc, SliderState>(
+      listener: (context, state) {
+        if (state is SliderSuccess && state.cafeMenuEntity.status == 1) {
+          setState(() {
+            sliderData = state.cafeMenuEntity.data!;
+          });
+        }
+      },
+      builder: (context, state) {
+        return SizedBox(
+          height: size.height * 0.28,
+          child: PageView.builder(
+            itemCount: sliderData.length,
+            onPageChanged: (i) => setState(() => currentIndex = i),
+            itemBuilder: (_, index) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Image.network(
+                    APICredentials.sliderimageurl +
+                        sliderData[index].image!,
+                    fit: BoxFit.cover,
+                    loadingBuilder: (_, child, progress) =>
+                    progress == null
+                        ? child
+                        : const Center(child: CircularProgressIndicator()),
+                    errorBuilder: (_, __, ___) =>
+                    const Icon(Icons.image, size: 60),
                   ),
-                );
-
-
-              },
-
-              child:  Icon(Icons.notifications_none, color: Colors.black)),
-          const SizedBox(width: 12),
-
-
-          GestureDetector(
-            onTap: (){
-
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>  Profile(),
                 ),
               );
-
-
             },
-
-        child:  const Icon(Icons.person, color: Colors.black)),
-          const SizedBox(width: 12),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
-
-            // Carousel (logo + dots)
-
-            BlocConsumer<SliderBloc, SliderState>(
-              listener: (context, state) async {
-                if(state is WalletSuccess)
-                  {
-              //      AppUtils.hideLoader(context);
-                    WalletBalanceEntity wb=state.walletBalanceEntity;
-                    setState(() {
-
-                      if(wb.status==1)
-                      {
-
-                        walletbalance=wb.data!.balance.toString();
-                      }
-
-                    });
-                  }
-
-                if (state is SliderSuccess) {
-                 // AppUtils.hideLoader(context);
-
-
-                  SlidersEntity loginresponse=state.cafeMenuEntity;
-
-                  if(loginresponse.status==1)
-                  {
-
-
-                    setState(() {
-
-                      sliderdata.clear();
-                      sliderdata.addAll(loginresponse.data!);
-                    });
-
-
-
-
-                  }
-
-
-
-
-                }
-                else if(state is SliderLoading)
-                {
-
-                 // AppUtils.showLoader(context);
-                }
-
-
-
-
-                else if (state is SliderFailure) {
-
-                //  AppUtils.hideLoader(context);
-
-
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(state.error)),
-                    );
-
-                }
-
-
-
-
-
-
-
-
-
-
-              },
-              builder: (context, state) {
-                return   Column(
-                  children: [
-
-                    SizedBox(
-                      child: PageView.builder(
-                        itemCount: sliderdata.length,
-                        onPageChanged: (index) {
-                          setState(() {
-                            currentIndex = index;
-                          });
-                        },
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(20),
-                              child:
-
-
-
-                              Image.network(
-                               APICredentials.sliderimageurl+ sliderdata[index].image.toString(),
-                                fit: BoxFit.cover,
-                                width: double.infinity,
-                            loadingBuilder: (context, child, loadingProgress) {
-                              if (loadingProgress == null) return child; // Image loaded successfully
-                              return Center(child: CircularProgressIndicator()); // Show loader while loading
-                            },
-                            errorBuilder: (context, error, stackTrace) {
-                              return Icon(Icons.image,size: 50,color: Colors.black26,); // Show a local placeholder on error
-                            },
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                      width: double.infinity,
-                      height: 250,
-
-                    ),
-                    const SizedBox(height: 10),
-
-                    // Indicator dots
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(sliderdata.length, (index) {
-                        return Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 4),
-                          width: 10,
-                          height: 10,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color:
-                            currentIndex == index ? Colors.brown : Colors.grey,
-                          ),
-                        );
-                      }),
-                    ),
-                  ],
-                );
-              },
-            ),
-
-
-
-
-
-            const SizedBox(height: 20),
-
-            // Four grid buttons
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: GridView.count(
-                shrinkWrap: true,
-                crossAxisCount: 2,
-                mainAxisSpacing: 20,
-                crossAxisSpacing: 20,
-                physics: const NeverScrollableScrollPhysics(),
-                children: [
-                  _buildCard('Wallet', Icons.account_balance_wallet),
-
-             _buildCard('Menu', Icons.restaurant_menu),
-
-
-
-
-
-
-                  _buildCard('Scan QR', Icons.qr_code_scanner),
-                  _buildCard('Create Order', Icons.shopping_cart_outlined),
-                ],
-              ),
-            ),
-
-            const SizedBox(height: 8),
-            BlocConsumer<AuthBloc, AuthState>(
-              listener: (context, state) async {
-                if(state is DecryptQRFailure)
-                {
-                  AppUtils.hideLoader(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(state.error)),
-                  );
-
-                }
-
-                else if(state is DecryptQRLoading)
-                {
-                  AppUtils.showLoader(context);
-                }
-
-                else  if (state is DecryptQRSuccess) {
-                  AppUtils.hideLoader(context);
-
-                  UserProfileEntity usp=state.user;
-
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => SendMoneyPage(
-                        name: usp.data!.name!,
-                        mobile: usp.data!.mobile!, id: usp.data!.id!,
-                      ),
-                    ),
-                  );
-
-
-
-
-
-
-                }
-                // else if(state is UserProfilelistLoading)
-                // {
-                //
-                //   AppUtils.showLoader(context);
-                //
-                // }
-
-
-              },
-              builder: (context, state) {
-                return     Padding(
-                    padding:  EdgeInsets.all(10),
-                    child:  ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>  ReferEarnPage(),
-                          ),
-                        );
-
-
-                      },
-                      style: ElevatedButton.styleFrom(
-
-                        minimumSize: Size(double.infinity, 60),
-                        backgroundColor: Colors.redAccent, // button color
-                        foregroundColor: Colors.white, // text color
-                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      child: Text(
-                        'Referrals',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                    )
-                );
-              },
-            ),
-
-
-
-
-          ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildIndicator() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(
+        sliderData.length,
+            (index) => Container(
+          margin: const EdgeInsets.symmetric(horizontal: 4),
+          width: 8,
+          height: 8,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: currentIndex == index
+                ? Colors.brown
+                : Colors.grey.shade400,
+          ),
         ),
+      ),
+    );
+  }
+
+  /* ---------------- GRID ---------------- */
+
+  Widget _buildGrid(bool isTablet) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: GridView.count(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        crossAxisCount: isTablet ? 4 : 2,
+        crossAxisSpacing: 16,
+        mainAxisSpacing: 16,
+        childAspectRatio: isTablet ? 1.3 : 1,
+        children: [
+          _buildCard("Wallet", Icons.account_balance_wallet),
+          _buildCard("Menu", Icons.restaurant_menu),
+          _buildCard("Scan QR", Icons.qr_code_scanner),
+          _buildCard("Create Order", Icons.shopping_cart),
+        ],
       ),
     );
   }
 
   Widget _buildCard(String title, IconData icon) {
+    final width = MediaQuery.of(context).size.width;
+
     return GestureDetector(
-      onTap: () async {
-        // Add navigation or actions here
-
-
-        if(title.compareTo("Menu")==0)
-          {
-
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>  FoodMenuPage(),
-              ),
-            );
-
-          }
-        else if(title.compareTo("Scan QR")==0)
-          {
-
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(
-            //     builder: (context) =>  MobileScannerPage(),
-            //   ),
-            // );
-
-
-
-            String? qrResult = await NativeQRScanner.openScanner();
-            if (qrResult != null) {
-              print("Scanned QR: $qrResult");
-
-            //  AppUtils.showAlert(context, qrResult.toString());
-
-              BlocProvider.of<AuthBloc>(context).add(
-                DecryptQrEvent(
-
-                    qrResult.toString()
-                ),
-              );
-
-            }
-
-
-
-          }
-
-        else if(title.compareTo("Wallet")==0)
-          {
-
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>  WalletPage(),
-              ),
-            );
-
-          }
-        else if(title.compareTo("Create Order")==0){
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) =>  Comingsoon(title: ""),
-            ),
-          );
-
-        }
-
-      },
+      onTap: () async => _handleNavigation(title),
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(14),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.shade400,
+              color: Colors.black12,
+              blurRadius: 6,
               offset: const Offset(2, 2),
-              blurRadius: 4,
-            ),
+            )
           ],
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 40, color: Colors.black87),
+            Icon(icon, size: width * 0.09),
             const SizedBox(height: 10),
             Text(
               title,
-              style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.black87,
-                  fontWeight: FontWeight.w400),
+              style: TextStyle(
+                fontSize: width * 0.04,
+                fontWeight: FontWeight.w500,
+              ),
             ),
-            const SizedBox(height: 5),
-            (title.compareTo("Wallet")==0)?
-
-            Text(
-              "₹ "+walletbalance,
-              style: const TextStyle(
-                  fontSize: 17,
-                  color: Colors.green,
-                  fontWeight: FontWeight.bold),
-            )
-
-
-
-
-
-                :Container(),
+            if (title == "Wallet")
+              Padding(
+                padding: const EdgeInsets.only(top: 6),
+                child: Text(
+                  "₹ $walletBalance",
+                  style: TextStyle(
+                    color: Colors.green,
+                    fontSize: width * 0.045,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
           ],
         ),
       ),
     );
   }
 
+  /* ---------------- REFERRAL ---------------- */
 
+  Widget _buildReferralButton(Size size) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          minimumSize: Size(double.infinity, size.height * 0.07),
+          backgroundColor: Colors.redAccent,
+          shape:
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        ),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => ReferEarnPage()),
+          );
+        },
+        child: const Text(
+          "Referrals",
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
+  }
+
+  /* ---------------- NAVIGATION ---------------- */
+
+  Future<void> _handleNavigation(String title) async {
+    if (title == "Menu") {
+      Navigator.push(context,
+          MaterialPageRoute(builder: (_) => FoodMenuPage()));
+    } else if (title == "Wallet") {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (_) => WalletPage()));
+    } else if (title == "Create Order") {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (_) => Comingsoon(title: "")));
+    } else if (title == "Scan QR") {
+      String? result = await NativeQRScanner.openScanner();
+      if (result != null) {
+        BlocProvider.of<AuthBloc>(context)
+            .add(DecryptQrEvent(result));
+      }
+    }
+  }
+
+  Future<void> _refreshData() async {
+    BlocProvider.of<SliderBloc>(context).add(FetchSliders());
+  }
 }

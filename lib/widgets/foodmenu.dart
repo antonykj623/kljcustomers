@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kljcafe_customers/bloc/cafemenu/cafemenu_bloc.dart';
 import 'package:kljcafe_customers/domain/cafe_menu_entity.dart';
 import 'package:kljcafe_customers/web/api_credentials.dart';
-
 import '../utils/apputils.dart';
 
 class FoodMenuPage extends StatefulWidget {
@@ -14,160 +13,188 @@ class FoodMenuPage extends StatefulWidget {
 }
 
 class _FoodMenuPageState extends State<FoodMenuPage> {
-  int selectedCategory = 0;
-
-
-
-  final List<CafeMenuData> foods = [
-  ];
-
+  List<CafeMenuData> foods = [];
   List<int> selectedItems = [];
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-
-    BlocProvider.of<CafemenuBloc>(context).add(
-        getCafeMenuItems(
-
-
-        ));
+    BlocProvider.of<CafemenuBloc>(context).add(getCafeMenuItems());
   }
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        elevation: 0,
+        elevation: 1,
         title: const Text(
           "KLJ Cafe Menu",
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         centerTitle: true,
       ),
-      body:           BlocConsumer<CafemenuBloc, CafemenuState>(
-        listener: (context, state) async {
+      body: BlocConsumer<CafemenuBloc, CafemenuState>(
+        listener: (context, state) {
+          if (state is CafemenuLoading) {
+            AppUtils.showLoader(context);
+          } else {
+            AppUtils.hideLoader(context);
+          }
 
-
-          if(state is CafemenuSuccess)
-          {
-              AppUtils.hideLoader(context);
-
-            CafeMenuEntity wb=state.cafeMenuEntity;
+          if (state is CafemenuSuccess &&
+              state.cafeMenuEntity.status == 1) {
             setState(() {
-
-              if(wb.status==1)
-              {
-
-                setState(() {
-
-                  foods.clear();
-                  foods.addAll(wb.data!);
-                });
-
-
-              }
-
+              foods = state.cafeMenuEntity.data!;
             });
-
           }
-          else if(state is CafemenuFailure)
-          {
-              AppUtils.hideLoader(context);
-
-          }
-          else if(state is CafemenuLoading)
-          {
-
-             AppUtils.showLoader(context);
-          }
-
-
-
         },
         builder: (context, state) {
-          return GridView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: foods.length,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              mainAxisSpacing: 16,
-              crossAxisSpacing: 16,
-              childAspectRatio: 0.75,
-            ),
-            itemBuilder: (context, index) {
-              final item = foods[index];
-              bool isSelected = selectedItems.contains(index);
-              return GestureDetector(
-                onTap: () {
-                  setState(() {
-                    isSelected
-                        ? selectedItems.remove(index)
-                        : selectedItems.add(index);
-                  });
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.2),
-                        blurRadius: 8,
-                        spreadRadius: 2,
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child:   Image.network(APICredentials.productimagebaseurl + foods[index].image.toString(), height: 100, fit: BoxFit.cover,loadingBuilder: (context, child, loadingProgress) {
-                            if (loadingProgress == null) return child; // Image loaded successfully
-                            return Center(child: CircularProgressIndicator()); // Show loader while loading
-                          },
-                            errorBuilder: (context, error, stackTrace) {
-                              return Icon(Icons.image,size: 50,color: Colors.black26,); // Show a local placeholder on error
-                            },),
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      Text(foods[index].name.toString(),
-                          style: const TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold)),
-                      Text(foods[index].description.toString(),
-                          style: const TextStyle(
-                              fontSize: 13, color: Colors.grey)),
-                      const SizedBox(height: 4),
-                      Text(
-                        foods[index].rate.toString()+" ₹",
-                        style: const TextStyle(
-                            fontSize: 16,
-                            color: Colors.red,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 8),
-                    ],
-                  ),
+          if (foods.isEmpty) {
+            return const Center(
+              child: Text("No items available"),
+            );
+          }
+
+          return LayoutBuilder(
+            builder: (context, constraints) {
+              int crossAxisCount = 2;
+
+              if (constraints.maxWidth >= 1000) {
+                crossAxisCount = 5; // web
+              } else if (constraints.maxWidth >= 750) {
+                crossAxisCount = 4; // tablet
+              } else if (constraints.maxWidth >= 500) {
+                crossAxisCount = 3; // large phones
+              }
+
+              return GridView.builder(
+                padding: const EdgeInsets.all(16),
+                itemCount: foods.length,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: crossAxisCount,
+                  mainAxisSpacing: 16,
+                  crossAxisSpacing: 16,
+                  childAspectRatio: 0.72,
                 ),
+                itemBuilder: (context, index) {
+                  final item = foods[index];
+                  final isSelected = selectedItems.contains(index);
+
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        isSelected
+                            ? selectedItems.remove(index)
+                            : selectedItems.add(index);
+                      });
+                    },
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: isSelected
+                              ? Colors.redAccent
+                              : Colors.transparent,
+                          width: 1.5,
+                        ),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 6,
+                            offset: Offset(2, 2),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          // IMAGE
+                          Expanded(
+                            flex: 6,
+                            child: ClipRRect(
+                              borderRadius: const BorderRadius.vertical(
+                                top: Radius.circular(16),
+                              ),
+                              child: Image.network(
+                                APICredentials.productimagebaseurl +
+                                    item.image!,
+                                fit: BoxFit.cover,
+                                loadingBuilder:
+                                    (context, child, loadingProgress) {
+                                  if (loadingProgress == null) return child;
+                                  return const Center(
+                                      child: CircularProgressIndicator());
+                                },
+                                errorBuilder:
+                                    (context, error, stackTrace) =>
+                                const Icon(
+                                  Icons.image,
+                                  size: 60,
+                                  color: Colors.black26,
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          // DETAILS
+                          Expanded(
+                            flex: 5,
+                            child: Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    item.name!,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize: size.width * 0.04,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    item.description ?? "",
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontSize: 13,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                  const Spacer(),
+                                  Text(
+                                    "₹ ${item.rate}",
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.red,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
               );
             },
           );
         },
-      )
-
-
-
-
-
-      ,
-
-
+      ),
     );
   }
 }
